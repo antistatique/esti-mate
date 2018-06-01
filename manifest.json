@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Esti Mate",
+  "version": "1.0",
+  "description": "Your estimate best friend",
+  "content_scripts": [
+    {
+      "matches": ["*://*.harvestapp.com/estimates/*/edit"],
+      "js": [
+        "lib/rx.min.js",
+        "lib/jquery-3.2.1.min.js",
+        "src/App.js",
+        "src/index.js"
+      ]
+    }
+  ]
+
+}
