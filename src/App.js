@@ -26,7 +26,6 @@ class App {
   }
 
   getTotalPm() {
-    console.log(this.state.total * this.state.factor / 100);
     return this.state.total * this.state.factor / 100;
   }
 }
