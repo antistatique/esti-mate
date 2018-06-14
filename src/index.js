@@ -30,13 +30,10 @@ $(document).ready(() => {
   pmUpdater.on('click', function (e) {
     e.preventDefault();
     const total = app.state.total * app.state.factor / 100;
+
     pmField.val(total);
-    var evt = document.createEvent("HTMLEvents");
-    evt.target = pmField;
-    evt.initEvent("change", false, true);
-    document.dispatchEvent(evt);
-    // document.fireEvent("onchange");
-    // window.invoice.recompute_amounts_and_totals();
+    // Hack to trigger global results refresh
+    $("#estimate_currency").change();
   });
 
   app.totalTrigger.subscribe(() => {
