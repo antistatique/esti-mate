@@ -1,6 +1,10 @@
 $(document).ready(() => {
   const app = new App();
   const fields = $('#invoice_item_rows tr').not(':last').find('.quantity input');
+  const selects = $('#invoice_item_rows tr').find('.type select');
+
+  $('#invoice_notes_area').before('<div id="summary-wrapper"></div>')
+  generateSummary();
 
   // Handle PM fields and notes
   const pmField = $('#invoice_item_rows tr').last().find('.quantity input');
@@ -34,6 +38,8 @@ $(document).ready(() => {
     pmField.val(total);
     // Hack to trigger global results refresh
     $("#estimate_currency").change();
+
+    generateSummary();
   });
 
   app.totalTrigger.subscribe(() => {
@@ -57,5 +63,8 @@ $(document).ready(() => {
     const diff = newValue - oldValue;
 
     app.updateTotal(diff);
+    generateSummary();
   });
+
+  selects.on('change', () => generateSummary());
 });
