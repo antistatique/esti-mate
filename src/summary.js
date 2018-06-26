@@ -1,38 +1,44 @@
-// Render a summray table at the bottom of the estimate during edition
+/*
+ * Render a summray table at the bottom of the estimate during edition
+ */
 const generateSummary = () => {
+  const d = document;
   const summary = new Map();
   let totalQty = 0;
   let totalAmount = 0;
-  
-  $('#invoice_item_rows tr').each(function () {
-    const type = $(this).find('select').val();
-    const qty = parseFloat($(this).find('.js-change-total').val());
-    const amount = parseFloat(
-      $(this)
-        .find('.amount')
-        .text()
-        .substring(4)     // Remove 'CHF '
-        .replace(/'/, '') // Remove currency formatting 10'500 -> 10500
-    );
 
-    totalQty += qty;
-    totalAmount += amount;
+  // Loop over each rows and update Quantity and Amount
+  d.getElementById('invoice_item_rows')
+    .querySelectorAll('tr')
+    .forEach(element => {
+      const select = element.querySelector('select');
+      const type = select.options[select.selectedIndex].value;
+      const qty = parseFloat(element.querySelector('.js-change-total').value);
+      const amount = parseFloat(
+        element
+          .querySelector('.amount')
+          .innerText.substring(4) // Remove 'CHF '
+          .replace(/'/, ''), // Remove currency formatting 10'500 -> 10500
+      );
 
-    if (!summary.has(type)) {
-      summary.set(type, {
+      totalQty += qty;
+      totalAmount += amount;
+
+      if (!summary.has(type)) {
+        summary.set(type, {
           type,
           qty: 0.0,
           amount: 0.0,
-      });
-    }
+        });
+      }
 
-    const prevObject = summary.get(type);
-    summary.set(type, {
+      const prevObject = summary.get(type);
+      summary.set(type, {
         type,
         qty: prevObject.qty + qty,
-        amount: prevObject.amount + amount
+        amount: prevObject.amount + amount,
+      });
     });
-  });
 
   // Build the new Table
   const tableHeader = `<h4 class="no-print">Résumé (non visible par le client)</h4>
@@ -49,7 +55,7 @@ const generateSummary = () => {
 
   let tableBody = '';
   summary.forEach((data, key) => {
-      tableBody += `
+    tableBody += `
       <tr>
         <td class="item-type desktop-only">${key}</td>
         <td class="item-qty desktop-only">${data.qty}</td>
@@ -69,5 +75,7 @@ const generateSummary = () => {
   </tbody>`;
   tableFooter += `</table>`;
 
-  $('#summary-wrapper').html(tableHeader + tableBody + tableFooter, $('.client-doc-notes'));
+  (d.getElementById('summary-wrapper').innerHTML =
+    tableHeader + tableBody + tableFooter),
+    d.querySelector('.client-doc-notes');
 };

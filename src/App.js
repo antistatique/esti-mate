@@ -1,5 +1,10 @@
 const { Subject } = rxjs;
 
+/**
+ * Centralize pure plugin's logic and Observables
+ *
+ * @class App
+ */
 class App {
   constructor() {
     this.state = {
@@ -12,12 +17,12 @@ class App {
 
   updateTotal(number) {
     const total = this.state.total + number;
-    this.state = {...this.state, total };
-    this.totalTrigger.next();    
+    this.state = { ...this.state, total };
+    this.totalTrigger.next();
   }
 
   updateFactor(factor) {
-    this.state = {...this.state, factor };
+    this.state = { ...this.state, factor };
     this.totalTrigger.next();
   }
 
@@ -26,6 +31,6 @@ class App {
   }
 
   getTotalPm() {
-    return this.state.total * this.state.factor / 100;
+    return (this.state.total * this.state.factor) / 100;
   }
 }
