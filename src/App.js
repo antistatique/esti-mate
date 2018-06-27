@@ -17,8 +17,7 @@ class App {
     // Import src/libs
     this.generateSummary = generateSummary;
     this.initPM = initPM;
-    this.airtableFetch = airtableFetch;
-    this.airtableTemplate = airtableTemplate;
+    this.airtableInit = airtableInit;
   }
 
   updateTotal(number) {

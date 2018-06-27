@@ -11,18 +11,22 @@ const initPM = (app) => {
   const pmField = d
     .getElementById('invoice_item_rows')
     .querySelectorAll('tr:last-of-type .quantity input')[0];
+
+  if (d.getElementById('pm-tools')) d.getElementById('pm-tools').remove();
   pmField.insertAdjacentHTML(
     'afterend',
     `
-    <br /><br />
-    <em>Should be <b id="pm-total"></b>h</em><br />
-    <a href="#" id="pm-update" class="btn-action btn-small btn-pill">
-      Update !
-    </a>
-    <br /><br />
-    <label for="pm-factor">Percentage :</label><br>
-    <input id="pm-factor" type="number" value="${app.state.factor}" />
-  `,
+    <div id="pm-tools">
+      <br /><br />
+      <em>Should be <b id="pm-total"></b>h</em><br />
+      <a href="#" id="pm-update" class="btn-action btn-small btn-pill">
+        Update !
+      </a>
+      <br /><br />
+      <label for="pm-factor">Percentage :</label><br>
+      <input id="pm-factor" type="number" value="${app.state.factor}" />
+    </div>
+    `,
   );
 
   // PM percentage events

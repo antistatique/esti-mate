@@ -20,21 +20,39 @@ ready(() => {
   const d = document;
   const app = new App();
 
-  // Prepare and generate summary
+  // Prepare
   d.getElementById('invoice_notes_area').insertAdjacentHTML(
     'beforebegin',
-    '<div id="summary-wrapper"></div>',
+    `
+    <div class="clearfix"  style="margin: 50px 0;">
+      <div id="summary-wrapper" class="span-12"></div>
+      <div id="todo-wrapper" class="span-4"></div>
+    </div>
+    `,
   );
-  app.generateSummary();
 
-  // Generate PM tools
-  app.initPM(app);
+  const init = () => {
+    // Init summary generation
+    app.generateSummary();
 
-  // Init template feature
-  const templates = app.airtableFetch('templates');
-  const types = app.airtableFetch('types');
+    // Generate PM tools
+    app.initPM(app);
 
-  Promise.all([templates, types]).then((values) => {
-    app.airtableTemplate(...values);
+    // Init template feature
+    app.airtableInit();
+  };
+
+  init();
+
+  d.getElementById('close_sort_items_link')
+    .querySelector('a')
+    .addEventListener('click', () => {
+      init();
+    });
+
+  d.querySelectorAll('a.delete').forEach((element) => {
+    element.addEventListener('click', () => {
+      setTimeout(() => init(), 300);
+    });
   });
 });
