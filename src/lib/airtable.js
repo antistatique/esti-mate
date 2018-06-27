@@ -20,7 +20,7 @@ const airtableFetch = (type, offset = null, payload = [], resolver = null) => {
         },
       },
     )
-      .then(async res => {
+      .then(async (res) => {
         const data = await res.json();
         const newData = [...payload, ...data.records];
         if (data.offset) {
@@ -30,32 +30,30 @@ const airtableFetch = (type, offset = null, payload = [], resolver = null) => {
           resolve(newData);
         }
       })
-      .catch(err => {
-        console.error(err);
+      .catch((err) => {
         reject(err);
+        throw new Error(err);
       });
   });
 };
 
-const airtableTemplate = data => {
+const airtableTemplate = (templates, type) => {
   const d = document;
 
   d.getElementById('invoice_item_rows')
     .querySelectorAll('tr')
-    .forEach(element => {
+    .forEach((element) => {
       const options = data.map((item, key) => {
         if (undefined === item.fields.type || undefined === item.fields.name) {
           return '';
         }
 
         return `
-          <option value="${key}">[${item.fields.type}] ${
-          item.fields.name
-        }</option> 
+        <option value="${key}">
+          [${item.fields.type}] ${item.fields.name}
+        </option>
         `;
       });
-
-      console.log(options);
 
       element.querySelector('.description').insertAdjacentHTML(
         'afterbegin',

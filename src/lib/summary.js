@@ -10,7 +10,7 @@ const generateSummary = () => {
   // Loop over each rows and update Quantity and Amount
   d.getElementById('invoice_item_rows')
     .querySelectorAll('tr')
-    .forEach(element => {
+    .forEach((element) => {
       const select = element.querySelector('select');
       const type = select.options[select.selectedIndex].value;
       const qty = parseFloat(element.querySelector('.js-change-total').value);
@@ -41,8 +41,14 @@ const generateSummary = () => {
     });
 
   // Build the new Table
-  const tableHeader = `<h4 class="no-print">Résumé (non visible par le client)</h4>
-  <table class="client-doc-items no-print" cellspacing="0" cellpadding="0" border="0" style="margin-top: 10px; width: 600px;">
+  const tableHeader = `
+  <h4 class="no-print">Résumé (non visible par le client)</h4>
+  <table
+    class="client-doc-items no-print"
+    cellspacing="0"
+    cellpadding="0"
+    border="0"
+    style="margin-top: 10px; width: 600px;">
       <thead class="client-doc-items-header desktop-only">
         <tr>
           <th class="item-type">Item Type</th>
@@ -63,7 +69,7 @@ const generateSummary = () => {
       </tr>
       `;
   });
-  tableBody += `</tbody>`;
+  tableBody += '</tbody>';
 
   let tableFooter = `
   <tbody class="client-doc-summary">
@@ -73,9 +79,9 @@ const generateSummary = () => {
           <td class="item-amount">${totalAmount}</td>
       </tr>
   </tbody>`;
-  tableFooter += `</table>`;
+  tableFooter += '</table>';
 
-  (d.getElementById('summary-wrapper').innerHTML =
-    tableHeader + tableBody + tableFooter),
-    d.querySelector('.client-doc-notes');
+  // Inject summary markup
+  const summaryHTML = tableHeader + tableBody + tableFooter;
+  d.getElementById('summary-wrapper').innerHTML = summaryHTML;
 };

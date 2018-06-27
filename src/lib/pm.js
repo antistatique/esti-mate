@@ -1,9 +1,7 @@
 /**
  * Set PM fields and handle value updates and actions
- *
- * this = App class
  */
-const initPM = app => {
+const initPM = (app) => {
   const d = document;
 
   /**
@@ -29,19 +27,19 @@ const initPM = app => {
 
   // PM percentage events
   const pmFactor = d.getElementById('pm-factor');
-  pmFactor.addEventListener('change', e => {
+  pmFactor.addEventListener('change', (e) => {
     app.updateFactor(e.target.value);
   });
 
   // PM update button events
   const pmUpdater = d.getElementById('pm-update');
-  pmUpdater.addEventListener('click', e => {
+  pmUpdater.addEventListener('click', (e) => {
     e.preventDefault();
     const total = (app.state.total * app.state.factor) / 100;
 
     pmField.value = total;
     // Hack to trigger global results refresh
-    var event = document.createEvent('HTMLEvents');
+    const event = document.createEvent('HTMLEvents');
     event.initEvent('change', true, false);
     d.getElementById('estimate_currency').dispatchEvent(event);
 
@@ -63,15 +61,15 @@ const initPM = app => {
     .getElementById('invoice_item_rows')
     .querySelectorAll('tr:not(:last-of-type) .quantity input');
 
-  qtyFields.forEach(field => {
+  qtyFields.forEach((field) => {
     const value = app.format(field.value);
     app.updateTotal(value);
 
-    field.addEventListener('focusin', e => {
+    field.addEventListener('focusin', (e) => {
       e.target.setAttribute('data-val', e.target.value);
     });
 
-    field.addEventListener('change', e => {
+    field.addEventListener('change', (e) => {
       const oldValue = app.format(e.target.getAttribute('data-val'));
       const newValue = app.format(e.target.value);
       const diff = newValue - oldValue;
@@ -91,10 +89,10 @@ const initPM = app => {
     .getElementById('invoice_item_rows')
     .querySelectorAll('tr:not(:last-of-type) .price input');
 
-  priceFields.forEach(field => {
-    field.addEventListener('change', e =>
-      setTimeout(() => app.generateSummary(), 300),
-    );
+  priceFields.forEach((field) => {
+    field.addEventListener('change', (e) => {
+      setTimeout(() => app.generateSummary(), 300);
+    });
   });
 
   /**
@@ -105,5 +103,7 @@ const initPM = app => {
     .getElementById('invoice_item_rows')
     .querySelectorAll('tr .type select');
 
-  selects.addEventListener('change', () => app.generateSummary());
+  selects.forEach((select) => {
+    select.addEventListener('change', () => app.generateSummary());
+  });
 };

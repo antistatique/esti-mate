@@ -1,0 +1,53 @@
+{
+  "name": "esti-mate",
+  "version": "0.0.1",
+  "description": "Your estimate best friend",
+  "main": "src/index.js",
+  "repository": "git@github.com:antistatique/esti-mate.git",
+  "author": "Antistatique",
+  "license": "MIT",
+  "eslintConfig": {
+    "extends": "eslint-config-airbnb",
+    "parser": "babel-eslint",
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "ecmaFeatures": {
+        "jsx": "true",
+        "spread": "true"
+      }
+    },
+    "env": {
+      "browser": "true",
+      "es6": "true"
+    },
+    "rules": {
+      "arrow-parens": [
+        2,
+        "as-needed",
+        {
+          "requireForBlockBody": true
+        }
+      ],
+      "arrow-body-style": 0,
+      "camelcase": 0,
+      "max-len": [
+        2,
+        {
+          "code": 80
+        }
+      ],
+      "global-require": 0,
+      "no-undef": 0,
+      "no-unused-vars": 0,
+      "class-methods-use-this": 0
+    }
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.5",
+    "eslint": "^5.0.1",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.10.0"
+  }
+}

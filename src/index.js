@@ -1,7 +1,7 @@
 /**
  * document ready
  */
-const ready = fn => {
+const ready = (fn) => {
   if (
     document.attachEvent
       ? document.readyState === 'complete'
@@ -31,8 +31,10 @@ ready(() => {
   app.initPM(app);
 
   // Init template feature
-  app.airtableFetch('templates').then(data => {
-    console.log(data);
-    app.airtableTemplate(data);
+  const templates = app.airtableFetch('templates');
+  const types = app.airtableFetch('types');
+
+  Promise.all([templates, types]).then((values) => {
+    app.airtableTemplate(...values);
   });
 });

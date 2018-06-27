@@ -18,6 +18,7 @@ class App {
     this.generateSummary = generateSummary;
     this.initPM = initPM;
     this.airtableFetch = airtableFetch;
+    this.airtableTemplate = airtableTemplate;
   }
 
   updateTotal(number) {
@@ -32,7 +33,7 @@ class App {
   }
 
   format(number) {
-    return parseFloat(number.replace(/\'/g, ''), 10);
+    return parseFloat(number.replace(/'/g, ''), 10);
   }
 
   getTotalPm() {
