@@ -39,17 +39,21 @@ ready(() => {
     app.initPM(app);
 
     // Init template feature
-    app.airtableInit();
-  };
+    const workspace = browser.storage.local.get('airtable_workspace');
+    const key = browser.storage.local.get('airtable_key');
 
+    Promise.all([workspace, key]).then(res => app.airtableInit(res));
+  };
   init();
 
+  // Reset everything after reordering rows
   d.getElementById('close_sort_items_link')
     .querySelector('a')
     .addEventListener('click', () => {
       init();
     });
 
+  // Reset everything after removing rows
   d.querySelectorAll('a.delete').forEach((element) => {
     element.addEventListener('click', () => {
       setTimeout(() => init(), 300);

@@ -5,8 +5,12 @@
   "description": "Your estimate best friend",
   "permissions": [
     "*://api.airtable.com/*",
-    "webRequest"
+    "webRequest",
+    "storage"
   ],
+  "options_ui": {
+    "page": "src/settings/index.html"
+  },
   "content_scripts": [
     {
       "matches": ["*://*.harvestapp.com/estimates/*/edit"],

@@ -2,21 +2,28 @@
  * Airtable data recursive fetch method
  *
  * @param {String} type
+ * @param {Object} settings
  * @param {Number} [offset=null]
  * @param {Object} [payload=[]]
  * @param {Function} [resolver=null]
  * @returns Promise(data)
  */
-const airtableFetch = (type, offset = null, payload = [], resolver = null) => {
+const airtableFetch = (
+  type,
+  settings,
+  offset = null,
+  payload = [],
+  resolver = null,
+) => {
   return new Promise((resolve, reject) => {
     fetch(
-      `https://api.airtable.com/v0/appNwnrYUfPz3B1qd/${type}${
+      `https://api.airtable.com/v0/${settings.airtable_workspace}/${type}${
         offset ? `?offset=${offset}` : ''
       }`,
       {
         method: 'GET',
         headers: {
-          Authorization: 'Bearer keyx4jPvUTE9OvN6e',
+          Authorization: `Bearer ${settings.airtable_key}`,
         },
       },
     )
@@ -24,7 +31,13 @@ const airtableFetch = (type, offset = null, payload = [], resolver = null) => {
         const data = await res.json();
         const newData = [...payload, ...data.records];
         if (data.offset) {
-          airtableFetch(type, data.offset, newData, resolver || resolve);
+          airtableFetch(
+            type,
+            settings,
+            data.offset,
+            newData,
+            resolver || resolve,
+          );
         } else {
           if (resolver) resolver(newData);
           resolve(newData);
@@ -144,10 +157,14 @@ const airtableTodo = (todos) => {
  * Init airtable template feature
  *
  */
-const airtableInit = (app) => {
+const airtableInit = (res) => {
+  console.log('raw', res);
+  console.log('fine', Object.assign(...res));
+  const settings = Object.assign(...res);
+
   // Init template feature
-  const templates = airtableFetch('templates');
-  const types = airtableFetch('types');
+  const templates = airtableFetch('templates', settings);
+  const types = airtableFetch('types', settings);
 
   // Populate backup textarea content
   const templatesBackup = [];
@@ -170,5 +187,5 @@ const airtableInit = (app) => {
   });
 
   // Setup todo list
-  airtableFetch('todos').then(todos => airtableTodo(todos));
+  airtableFetch('todos', settings).then(todos => airtableTodo(todos));
 };
