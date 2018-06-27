@@ -158,8 +158,6 @@ const airtableTodo = (todos) => {
  *
  */
 const airtableInit = (res) => {
-  console.log('raw', res);
-  console.log('fine', Object.assign(...res));
   const settings = Object.assign(...res);
 
   // Init template feature

@@ -14,7 +14,7 @@ function restoreOptions() {
   }
 
   function onError(error) {
-    console.error(`Error: ${error}`);
+    throw new Error(`Error: ${error}`);
   }
 
   const workspace = browser.storage.local.get('airtable_workspace');
