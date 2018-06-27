@@ -1,4 +1,4 @@
-/*
+/**
  * Render a summray table at the bottom of the estimate during edition
  */
 const generateSummary = () => {

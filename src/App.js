@@ -1,7 +1,7 @@
 const { Subject } = rxjs;
 
 /**
- * Centralize pure plugin's logic and Observables
+ * Centralize plugin's pure logic and Observables
  *
  * @class App
  */
@@ -13,6 +13,11 @@ class App {
     };
 
     this.totalTrigger = new Subject();
+
+    // Import src/libs
+    this.generateSummary = generateSummary;
+    this.initPM = initPM;
+    this.airtableFetch = airtableFetch;
   }
 
   updateTotal(number) {

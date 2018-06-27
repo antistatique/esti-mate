@@ -12,9 +12,10 @@
       "matches": ["*://*.harvestapp.com/estimates/*/edit"],
       "js": [
         "lib/rx.min.js",
+        "src/lib/summary.js",
+        "src/lib/airtable.js",
+        "src/lib/pm.js",
         "src/App.js",
-        "src/summary.js",
-        "src/airtable.js",
         "src/index.js"
       ]
     }
