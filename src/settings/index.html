@@ -3,19 +3,34 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <script src="../../lib/browser-polyfill.js"></script>
+    <link rel="stylesheet" href="settings.css">
   </head>
   <body>
-    <form>
-      <label>Airtable Workspace
-        <input type="text" id="airtable_workspace" placeholder="appXXXXXXXXX">
-      </label>
-      <br>
-      <label>Airtable API key
-        <input type="text" id="airtable_key" placeholder="keyXXXXXXXXX">
-      </label>
-      <br><br>
-      <button type="submit">Save</button>
-    </form>
+    <div class="settings-wrapper">
+      <form>
+        <table>
+          <tr>
+            <td>
+              <label for="airtable_workspace">Airtable Workspace</label>
+            </td>
+            <td>
+              <input type="text" id="airtable_workspace" placeholder="appXXXXXXXXX">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="airtable_key">Airtable API key</label>
+            </td>
+            <td>
+              <input type="text" id="airtable_key" placeholder="keyXXXXXXXXX">
+            </td>
+          </tr>
+        </table>
+        <br>
+        <button type="submit">Save</button>
+      </form>
+    </div>
     <script src="settings.js"></script>
   </body>
 </html>
