@@ -20,7 +20,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.harvestapp.com/estimates/*/edit"],
+      "matches": [
+        "*://*.harvestapp.com/estimates/*/edit",
+        "*://*.harvestapp.com/estimates/new"
+      ],
       "js": [
         "lib/browser-polyfill.js",
         "lib/rx.min.js",
