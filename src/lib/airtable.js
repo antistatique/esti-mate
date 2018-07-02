@@ -156,6 +156,7 @@ const airtableTodo = (todos) => {
 /**
  * Init airtable template feature
  *
+ * @param {Array} res of browser settings (Airtable's wroskpace and key)
  */
 const airtableInit = (res) => {
   const settings = Object.assign(...res);
