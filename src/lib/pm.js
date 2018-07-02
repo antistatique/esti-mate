@@ -1,4 +1,24 @@
 /**
+ * Parse DOM's inputs and set app.total of total hours
+ *
+ */
+const setTotal = (app) => {
+  // Reset total
+  app.state.total = 0;
+
+  // Parse all quantity fields and set total
+  const d = document;
+  const qtyFields = d
+    .getElementById('invoice_item_rows')
+    .querySelectorAll('tr:not(:last-of-type) .quantity input');
+
+  qtyFields.forEach((field) => {
+    const value = app.format(field.value);
+    app.updateTotal(value);
+  });
+};
+
+/**
  * Set PM fields and handle value updates and actions
  */
 const initPM = (app) => {
@@ -23,7 +43,7 @@ const initPM = (app) => {
     <div id="pm-tools">
       <br /><br />
       <em>Should be <b id="pm-total"></b>h</em><br />
-      <a href="#" id="pm-update" class="btn-action btn-small btn-pill">
+      <a href="#" id="pm-update" class="hui-button hui-button-primary">
         Update !
       </a>
       <br /><br />
@@ -36,6 +56,7 @@ const initPM = (app) => {
   // PM percentage events
   const pmFactor = d.getElementById('pm-factor');
   pmFactor.addEventListener('change', (e) => {
+    setTotal(app);
     app.updateFactor(e.target.value);
   });
 
@@ -46,6 +67,7 @@ const initPM = (app) => {
     const total = (app.state.total * app.state.factor) / 100;
 
     pmField.value = total;
+
     // Hack to trigger global results refresh
     const event = document.createEvent('HTMLEvents');
     event.initEvent('change', true, false);
@@ -61,57 +83,26 @@ const initPM = (app) => {
     pmTotal.innerHTML = total;
   });
 
+  setTotal(app);
+
   /**
-   * Quantity fields events
+   * Type, Price and Hours events for summary update
    * ---------------------------------------------------------------------------
    */
-  const qtyFields = d
+  const selectors = [
+    'tr .type select',
+    'tr:not(:last-of-type) .price input',
+    'tr:not(:last-of-type) .quantity input',
+  ].join(', ');
+
+  const items = d
     .getElementById('invoice_item_rows')
-    .querySelectorAll('tr:not(:last-of-type) .quantity input');
+    .querySelectorAll(selectors);
 
-  qtyFields.forEach((field) => {
-    const value = app.format(field.value);
-    app.updateTotal(value);
-
-    field.addEventListener('focusin', (e) => {
-      e.target.setAttribute('data-val', e.target.value);
-    });
-
-    field.addEventListener('change', (e) => {
-      const oldValue = app.format(e.target.getAttribute('data-val'));
-      const newValue = app.format(e.target.value);
-      const diff = newValue - oldValue;
-
-      app.updateTotal(diff);
-
-      // Wait for amount updates
+  items.forEach((item) => {
+    item.addEventListener('change', () => {
+      setTotal(app);
       setTimeout(() => app.generateSummary(), 300);
     });
-  });
-
-  /**
-   * Price fields events
-   * ---------------------------------------------------------------------------
-   */
-  const priceFields = d
-    .getElementById('invoice_item_rows')
-    .querySelectorAll('tr:not(:last-of-type) .price input');
-
-  priceFields.forEach((field) => {
-    field.addEventListener('change', (e) => {
-      setTimeout(() => app.generateSummary(), 300);
-    });
-  });
-
-  /**
-   * Type select events
-   * ---------------------------------------------------------------------------
-   */
-  const selects = d
-    .getElementById('invoice_item_rows')
-    .querySelectorAll('tr .type select');
-
-  selects.forEach((select) => {
-    select.addEventListener('change', () => app.generateSummary());
   });
 };
