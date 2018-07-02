@@ -9,7 +9,7 @@ Esti'mate is a cross browser extension (tested on recent Firefox and Chrome) bas
 - Summary table
 
 ### Download on :
-# [FIREFOX](https://addons.mozilla.org/fr/firefox/addon/esti-mate/) | [CHROME](https://chrome.google.com/webstore/detail/estimate/ahhoegjbkdhoembpkmnnghkmfinkkaog)
+# [🔥🦊 Firefox](https://addons.mozilla.org/fr/firefox/addon/esti-mate/) | [🍭 Chrome](https://chrome.google.com/webstore/detail/estimate/ahhoegjbkdhoembpkmnnghkmfinkkaog)
 
 ## Airtable settings
 
