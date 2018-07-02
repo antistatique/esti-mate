@@ -59,7 +59,7 @@ const airtableFetch = (
 const airtableInject = (e, templates) => {
   const id = e.target.options[e.target.selectedIndex].value;
   const template = templates.find(tpl => tpl.id === id);
-  const content = template.fields.content;
+  const content = template.fields.content; // eslint-disable-line
 
   e.target.nextElementSibling.value = content;
 };

@@ -20,7 +20,7 @@ ready(() => {
   const d = document;
   const app = new App();
 
-  // Prepare
+  // Prepare DOM
   d.getElementById('invoice_notes_area').insertAdjacentHTML(
     'beforebegin',
     `
@@ -31,6 +31,7 @@ ready(() => {
     `,
   );
 
+  // Plugin's Init method (can be restarted on major changes)
   const init = () => {
     // Init summary generation
     app.generateSummary();
