@@ -11,6 +11,10 @@ Esti'mate is a cross browser extension (tested on recent Firefox and Chrome) bas
 ### Download on :
 # [FIREFOX](https://addons.mozilla.org/fr/firefox/addon/esti-mate/) | [CHROME](https://chrome.google.com/webstore/detail/ahhoegjbkdhoembpkmnnghkmfinkkaog/publish-delayed)
 
+## Airtable settings
+
+Check the [full documentation](https://github.com/antistatique/esti-mate/blob/master/doc/airtable.md) to see how to setup **Airtable's template feature**.
+
 ## Contribution
 
 You must install the NPM module for a fully working linter environment and the `web-ext` CLI by doing :
