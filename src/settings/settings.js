@@ -9,8 +9,10 @@ function saveSettings(e) {
 function restoreOptions() {
   function setCurrentChoice(res) {
     const settings = Object.assign(...res);
-    document.querySelector('#airtable_workspace').value = settings.airtable_workspace;
-    document.querySelector('#airtable_key').value = settings.airtable_key;
+    // eslint-disable-next-line
+    document.getElementById('airtable_workspace').value =
+      settings.airtable_workspace || '';
+    document.getElementById('airtable_key').value = settings.airtable_key || '';
   }
 
   function onError(error) {

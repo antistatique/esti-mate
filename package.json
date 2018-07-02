@@ -1,11 +1,15 @@
 {
   "name": "esti-mate",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Your estimate best friend",
   "main": "src/index.js",
   "repository": "git@github.com:antistatique/esti-mate.git",
   "author": "Antistatique",
   "license": "MIT",
+  "scripts": {
+    "start": "web-ext run",
+    "build": "rm -rf ./web-ext-artifacts && web-ext build --ignore-files package.json README.md yarn.lock doc && cp -rf ./web-ext-artifacts/*.* ./ && rm -rf ./web-ext-artifacts"
+  },
   "eslintConfig": {
     "extends": "eslint-config-airbnb",
     "parser": "babel-eslint",
@@ -51,6 +55,7 @@
     "eslint-plugin-react": "^7.10.0"
   },
   "dependencies": {
+    "web-ext": "^2.7.0",
     "webextension-polyfill": "^0.2.1"
   }
 }

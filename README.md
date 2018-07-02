@@ -10,7 +10,7 @@ Esti'mate is a cross browser extension (tested on recent Firefox and Chrome) bas
 
 ## Contribution
 
-You can install the NPM module if you want a fully working linter environment by doing :
+You must install the NPM module for a fully working linter environment and the `web-ext` CLI by doing :
 
 ```bash
 $ yarn
@@ -18,4 +18,16 @@ $ yarn
 $ npm install
 ```
 
-Then, you just have to code and load your module for testing according to your browser.
+Then, you can either manually upload and reload your code according to your browser or start the following command :
+
+```bash
+$ yarn start
+```
+
+## Release
+
+First thing first, update the version and execute :
+
+```bash
+$ yarn build
+```
