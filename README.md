@@ -8,6 +8,9 @@ Esti'mate is a cross browser extension (tested on recent Firefox and Chrome) bas
 - Todo/Reminder list
 - Summary table
 
+### Download on :
+# [FIREFOX](https://addons.mozilla.org/fr/firefox/addon/esti-mate/) | [CHROME](https://chrome.google.com/webstore/detail/ahhoegjbkdhoembpkmnnghkmfinkkaog/publish-delayed)
+
 ## Contribution
 
 You must install the NPM module for a fully working linter environment and the `web-ext` CLI by doing :
@@ -31,3 +34,5 @@ First thing first, update the version and execute :
 ```bash
 $ yarn build
 ```
+
+Then, connect to the [Firefox](https://addons.mozilla.org/en-US/developers/addon/esti-mate) or [Chrome](https://chrome.google.com/webstore/developer/dashboard) developer console and upload the new version (`./esti_mate-X.X.zip`).
