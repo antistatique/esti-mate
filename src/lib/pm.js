@@ -12,6 +12,10 @@ const initPM = (app) => {
     .getElementById('invoice_item_rows')
     .querySelectorAll('tr:last-of-type .quantity input')[0];
 
+  pmField.addEventListener('change', (e) => {
+    setTimeout(() => app.generateSummary(), 300);
+  });
+
   if (d.getElementById('pm-tools')) d.getElementById('pm-tools').remove();
   pmField.insertAdjacentHTML(
     'afterend',
