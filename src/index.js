@@ -55,7 +55,7 @@ ready(() => {
     });
 
   // Reset everything after removing rows
-  d.querySelectorAll('a.delete').forEach((element) => {
+  d.querySelectorAll('a.delete, a#add_line_item_link').forEach((element) => {
     element.addEventListener('click', () => {
       setTimeout(() => init(), 300);
     });
