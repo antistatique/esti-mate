@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Esti'mate",
   "author": "Antistatique",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Your Harvest estimate's best friend",
   "homepage_url": "https://github.com/antistatique/esti-mate/",
   "permissions": [
@@ -26,7 +26,7 @@
       ],
       "js": [
         "lib/browser-polyfill.js",
-        "lib/rx.min.js",
+        "lib/rx.js",
         "src/lib/summary.js",
         "src/lib/airtable.js",
         "src/lib/pm.js",
