@@ -4,6 +4,7 @@ function saveSettings(e) {
     airtable_workspace: document.querySelector('#airtable_workspace').value,
     airtable_key: document.querySelector('#airtable_key').value,
   });
+  document.querySelector('.feedback').style.display = 'block';
 }
 
 function restoreOptions() {
@@ -21,6 +22,7 @@ function restoreOptions() {
 
   const workspace = browser.storage.local.get('airtable_workspace');
   const key = browser.storage.local.get('airtable_key');
+  document.querySelector('.feedback').style.display = 'none';
 
   Promise.all([workspace, key]).then(setCurrentChoice, onError);
 }
