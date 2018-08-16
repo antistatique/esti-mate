@@ -21,9 +21,8 @@ const setTotal = (app) => {
 /**
  * Set PM fields and handle value updates and actions
  */
-const initPM = (app, res) => {
+const initPM = (app, settings) => {
   const d = document;
-  const settings = Object.assign(...res);
 
   /**
    * PM tools generation and events handling

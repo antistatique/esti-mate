@@ -24,7 +24,7 @@ function restoreOptions() {
 
   const workspace = browser.storage.local.get('airtable_workspace');
   const key = browser.storage.local.get('airtable_key');
-  const show_pm_factor_field = browser.storage.local.get('show_pm_factor_field')
+  const show_pm_factor_field = browser.storage.local.get('show_pm_factor_field');
   document.querySelector('.feedback').style.display = 'none';
 
   Promise.all([workspace, key, show_pm_factor_field]).then(setCurrentChoice, onError);

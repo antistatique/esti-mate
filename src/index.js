@@ -38,7 +38,7 @@ ready(() => {
 
     // Generate PM tools
     const show_pm_factor_field = browser.storage.local.get('show_pm_factor_field');
-    Promise.all([show_pm_factor_field]).then(res => app.initPM(app, res));
+    show_pm_factor_field.then(res => app.initPM(app, res));
 
     // Init template feature
     const workspace = browser.storage.local.get('airtable_workspace');
