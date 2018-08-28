@@ -21,7 +21,7 @@ const setTotal = (app) => {
 /**
  * Set PM fields and handle value updates and actions
  */
-const initPM = (app) => {
+const initPM = (app, settings) => {
   const d = document;
 
   /**
@@ -37,6 +37,7 @@ const initPM = (app) => {
   });
 
   if (d.getElementById('pm-tools')) d.getElementById('pm-tools').remove();
+
   pmField.insertAdjacentHTML(
     'afterend',
     `
@@ -46,9 +47,11 @@ const initPM = (app) => {
       <a href="#" id="pm-update" class="hui-button hui-button-primary">
         Update !
       </a>
-      <br /><br />
-      <label for="pm-factor">Percentage :</label><br>
-      <input id="pm-factor" type="number" value="${app.state.factor}" />
+      <div class="pm-factor-block" style="display: ${settings.show_pm_factor_field ? 'block' : 'none'}">
+        <br />
+        <label for="pm-factor">Percentage :</label><br>
+        <input id="pm-factor" type="number" value="${app.state.factor}" />
+      </div>
     </div>
     `,
   );

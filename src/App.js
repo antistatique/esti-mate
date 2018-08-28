@@ -9,7 +9,7 @@ class App {
   constructor() {
     this.state = {
       total: 0,
-      factor: 20,
+      factor: 25,
     };
 
     this.totalTrigger = new Subject();

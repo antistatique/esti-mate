@@ -33,7 +33,7 @@ $ yarn start
 
 ## Release
 
-First thing first, update the version and execute :
+First thing first, update the version (in `package.json` and `manifest.json`) and execute :
 
 ```bash
 $ yarn build

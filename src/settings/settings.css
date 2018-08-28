@@ -10,6 +10,19 @@
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f15a1b', endColorstr='#f37f20',GradientType=1 );
 }
 
+.settings-wrapper table td {
+  padding-bottom: 5px;
+}
+
+.settings-wrapper .feedback {
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding: 5px;
+  background-color: #bff4b6;
+  border-radius: 5px;
+  color: green;
+}
+
 label {
   font-weight: bold;
 }
@@ -20,6 +33,9 @@ input {
   padding: 5px 10px;
   margin-left: 30px;
   font-size: 16px;
+}
+input[type="checkbox"] {
+  margin-left: 0;
 }
 
 button {
