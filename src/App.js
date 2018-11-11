@@ -15,7 +15,10 @@ class App {
     this.totalTrigger = new Subject();
 
     // Import src/libs
-    this.generateSummary = generateSummary;
+    this.generateSummary = () => {
+      generateSummaryEdit();
+      generateSummaryView();
+    };
     this.initPM = initPM;
     this.airtableInit = airtableInit;
   }
