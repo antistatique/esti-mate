@@ -1,3 +1,6 @@
+*NEXT RELEASE*
+ - Display the summary table on the estimate view page.
+
 *1.2.1* (2018-08-28)
   - Remove any minified files to facilite Firefox reviews.
 

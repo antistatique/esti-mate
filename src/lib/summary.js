@@ -1,11 +1,15 @@
 /**
  * Render a summray table at the bottom of the estimate during edition
  */
-const generateSummary = () => {
+const generateSummaryEdit = () => {
   const d = document;
   const summary = new Map();
   let totalQty = 0;
   let totalAmount = 0;
+
+  if (!d.getElementById('invoice_item_rows')) {
+    return;
+  }
 
   // Loop over each rows and update Quantity and Amount
   d.getElementById('invoice_item_rows')
@@ -40,6 +44,69 @@ const generateSummary = () => {
       });
     });
 
+  // Inject summary markup
+  const summaryHTML = renderSummary(summary, totalQty, totalAmount);
+  d.getElementById('summary-wrapper').innerHTML = summaryHTML;
+};
+
+/**
+ * Render a summray table at the bottom of the estimate during view
+ */
+const generateSummaryView = () => {
+  const d = document;
+  const summary = new Map();
+  let totalQty = 0;
+  let totalAmount = 0;
+
+  if (!d.querySelector('.client-doc-rows')) {
+    return ;
+  }
+  console.log('generateSummaryView');
+
+  // Loop over each rows and update Quantity and Amount
+  d.querySelector('.client-doc-rows')
+    .querySelectorAll('tbody tr')
+    .forEach((element) => {
+      const select = element.querySelector('select');
+      const type = element.querySelector('.item-type').innerText.trim();
+      const qty = parseFloat(element.querySelector('.item-qty').innerText.trim());
+      const amount = parseFloat(
+        element
+          .querySelector('.item-amount')
+          .innerText.trim()
+          .substring(4) // Remove 'CHF '
+          .replace(/'/, ''), // Remove currency formatting 10'500 -> 10500
+      );
+
+      totalQty += qty;
+      totalAmount += amount;
+
+      if (!summary.has(type)) {
+        summary.set(type, {
+          type,
+          qty: 0.0,
+          amount: 0.0,
+        });
+      }
+
+      const prevObject = summary.get(type);
+      summary.set(type, {
+        type,
+        qty: prevObject.qty + qty,
+        amount: prevObject.amount + amount,
+      });
+    });
+
+  // Inject summary markup
+  const summaryHTML = renderSummary(summary, totalQty, totalAmount);
+  d.getElementById('summary-wrapper').innerHTML = summaryHTML;
+};
+
+
+/**
+ * Render the summary table in HTML
+ */
+const renderSummary = (summary, totalQty, totalAmount) => {
   // Build the new Table
   const tableHeader = `
   <h4 class="no-print">Résumé (non visible par le client)</h4>
@@ -81,7 +148,5 @@ const generateSummary = () => {
   </tbody>`;
   tableFooter += '</table>';
 
-  // Inject summary markup
-  const summaryHTML = tableHeader + tableBody + tableFooter;
-  d.getElementById('summary-wrapper').innerHTML = summaryHTML;
-};
+  return tableHeader + tableBody + tableFooter;
+}
