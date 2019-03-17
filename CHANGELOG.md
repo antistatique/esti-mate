@@ -1,5 +1,6 @@
-*NEXT RELEASE*
+*1.3.0* (2019-03-17)
  - Display the summary table on the estimate view page.
+ - Support the new Harvest Estimate Design Form.
 
 *1.2.1* (2018-08-28)
   - Remove any minified files to facilite Firefox reviews.
