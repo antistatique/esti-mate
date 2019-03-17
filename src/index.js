@@ -25,8 +25,8 @@ ready(() => {
   if (d.querySelector('.client-doc-notes')) {
     targetQueryElement = '.client-doc-notes';
     appView = 'view';
-  } else if (d.querySelector('#invoice_notes_area')) {
-    targetQueryElement = '#invoice_notes_area';
+  } else if (d.querySelector('#edit_estimate')) {
+    targetQueryElement = '#edit_estimate > .mt-20';
     appView = 'edit';
   } else {
     // page not compatible with this plugin

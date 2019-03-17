@@ -58,10 +58,9 @@ const generateSummaryView = () => {
   let totalQty = 0;
   let totalAmount = 0;
 
-  if (!d.querySelector('.client-doc-rows')) {
+  if (!d.querySelector('.client-doc-rows') || d.querySelector('.edit_estimate')) {
     return ;
   }
-  console.log('generateSummaryView');
 
   // Loop over each rows and update Quantity and Amount
   d.querySelector('.client-doc-rows')
