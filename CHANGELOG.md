@@ -1,3 +1,6 @@
+*1.5.0* (2021-04-28)
+ - update dependencies
+
 *1.3.0* (2019-03-17)
  - Display the summary table on the estimate view page.
  - Support the new Harvest Estimate Design Form.
