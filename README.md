@@ -40,3 +40,14 @@ $ yarn build
 ```
 
 Then, connect to the [Firefox](https://addons.mozilla.org/en-US/developers/addon/esti-mate) or [Chrome](https://chrome.google.com/webstore/developer/dashboard) developer console and upload the new version (`./esti_mate-X.X.zip`).
+
+## For reviewers
+This extension embed two js library:
+
+ * `lib/browser-polyfill.js`
+   * version: `0.8.0`
+   * source (npm): https://unpkg.com/browse/webextension-polyfill@0.8.0/dist/browser-polyfill.js
+
+ * `lib/rxjs-6.6.7.umd.min.js`
+   * version: `6.6.7`
+   * source (npm): https://unpkg.com/browse/rxjs@6.6.7/bundles/rxjs.umd.min.js
