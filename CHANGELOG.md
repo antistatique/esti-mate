@@ -1,3 +1,9 @@
+*1.6.0* (2021-06-11)
+ - Adaptation to the new harvest estimate HTML markup
+ - refactor code to not use innerHTML / insertAdjacentHTML and only the DOM API. See #5
+ - get rxjs from github source instead of unpkg.com CDN. See #5
+ - add instruction for extension reviewer about the external library
+
 *1.5.0* (2021-04-28)
  - update dependencies
 
