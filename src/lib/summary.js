@@ -45,8 +45,10 @@ const generateSummaryEdit = () => {
     });
 
   // Inject summary markup
-  const summaryHTML = renderSummary(summary, totalQty, totalAmount);
-  d.getElementById('summary-wrapper').innerHTML = summaryHTML;
+  const summaryWrapper = d.getElementById('summary-wrapper');
+  const summaryElement = buildSummary(summary, totalQty, totalAmount);
+  summaryWrapper.textContent = ''; // remove all child
+  summaryWrapper.appendChild(summaryElement);
 };
 
 /**
@@ -97,55 +99,104 @@ const generateSummaryView = () => {
     });
 
   // Inject summary markup
-  const summaryHTML = renderSummary(summary, totalQty, totalAmount);
-  d.getElementById('summary-wrapper').innerHTML = summaryHTML;
+  const summaryWrapper = d.getElementById('summary-wrapper');
+  const summaryElement = buildSummary(summary, totalQty, totalAmount);
+  summaryWrapper.textContent = ''; // remove all Child
+  summaryWrapper.appendChild(summaryElement);
 };
 
 
 /**
- * Render the summary table in HTML
+ * Build the summary table with the DOM API.
+ *
+ * @return DOMElement element containing the summary table.
  */
-const renderSummary = (summary, totalQty, totalAmount) => {
-  // Build the new Table
-  const tableHeader = `
-  <h4 class="no-print">Résumé (non visible par le client)</h4>
-  <table
-    class="client-doc-items no-print"
-    cellspacing="0"
-    cellpadding="0"
-    border="0"
-    style="margin-top: 10px; width: 600px;">
-      <thead class="client-doc-items-header desktop-only">
-        <tr>
-          <th class="item-type">Item Type</th>
-          <th class="item-qty">Quantité</th>
-          <th class="item-amount">Montant</th>
-        </tr>
-      </thead>
-      <tbody class="client-doc-rows">
-      `;
+const buildSummary = (summary, totalQty, totalAmount) => {
+  const title = document.createElement('h4');
+  title.className = 'no-print';
+  title.textContent = 'Résumé (non visible par le client)';
 
-  let tableBody = '';
+  const table = document.createElement('table');
+  table.className = 'client-doc-items no-print';
+  table.style.borderSpacing = 0;
+  table.style.borderCollapse = 'collapse';
+  table.style.marginTop = '10px';
+  table.style.width = '600px';
+
+  const thead = document.createElement('thead');
+  thead.className = 'client-doc-items-header desktop-only';
+
+  const itemTypeHeader = document.createElement('th');
+  itemTypeHeader.className = 'item-type';
+  itemTypeHeader.textContent = 'Item Type';
+  thead.appendChild(itemTypeHeader);
+
+  const itemQtyHeader = document.createElement('th');
+  itemQtyHeader.className = 'item-qty';
+  itemQtyHeader.textContent = 'Quantité';
+  thead.appendChild(itemQtyHeader);
+
+  const itemAmountHeader = document.createElement('th');
+  itemAmountHeader.className = 'item-amount';
+  itemAmountHeader.textContent = 'Montant';
+  thead.appendChild(itemAmountHeader);
+
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  tbody.className = 'client-doc-rows';
+
   summary.forEach((data, key) => {
-    tableBody += `
-      <tr>
-        <td class="item-type desktop-only">${key}</td>
-        <td class="item-qty desktop-only">${data.qty}</td>
-        <td class="item-amount">${data.amount}</td>
-      </tr>
-      `;
+    const row = document.createElement('tr');
+
+    const itemTypeCol = document.createElement('td');
+    itemTypeCol.className = 'item-type desktop-only';
+    itemTypeCol.textContent = key;
+    row.appendChild(itemTypeCol);
+
+    const qtyCol = document.createElement('td');
+    qtyCol.className = 'item-qty desktop-only';
+    qtyCol.textContent = data.qty;
+    row.appendChild(qtyCol);
+
+    const amountCol = document.createElement('td');
+    amountCol.className = 'item-amount';
+    amountCol.textContent = data.amount;
+    row.appendChild(amountCol);
+
+    tbody.appendChild(row);
   });
-  tableBody += '</tbody>';
 
-  let tableFooter = `
-  <tbody class="client-doc-summary">
-      <tr class="total">
-          <td class="item-type desktop-only">Totaux de l'estimation</td>
-          <td class="item-qty desktop-only">${totalQty}</td>
-          <td class="item-amount">${totalAmount}</td>
-      </tr>
-  </tbody>`;
-  tableFooter += '</table>';
+  table.appendChild(tbody);
 
-  return tableHeader + tableBody + tableFooter;
+  const tableFooter = document.createElement('tfoot');
+  tableFooter.className = 'client-doc-summary';
+  const totalRow = document.createElement('tr');
+  totalRow.className = 'total';
+
+  const totalItemTypeCol = document.createElement('td');
+  totalItemTypeCol.className = 'item-type desktop-only';
+  totalItemTypeCol.textContent = 'Totaux de l\'estimation';
+  totalRow.appendChild(totalItemTypeCol);
+
+  const totalQtyCol = document.createElement('td');
+  totalQtyCol.className = 'item-qty desktop-only';
+  totalQtyCol.textContent = totalQty;
+  totalRow.appendChild(totalQtyCol);
+
+  const totalAmountCol = document.createElement('td');
+  totalAmountCol.className = 'item-amount';
+  totalAmountCol.textContent = totalAmount;
+  totalRow.appendChild(totalAmountCol);
+
+  tableFooter.appendChild(totalRow);
+
+  table.appendChild(tableFooter);
+
+  const wrapperEl = document.createElement('div');
+
+  wrapperEl.appendChild(title);
+  wrapperEl.appendChild(table);
+
+  return wrapperEl;
 }
