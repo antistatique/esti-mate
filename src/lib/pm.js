@@ -38,10 +38,9 @@ const initPM = (app, settings) => {
 
   if (d.getElementById('pm-tools')) d.getElementById('pm-tools').remove();
 
-  pmField.insertAdjacentHTML(
-    'afterend',
-    `
-    <div id="pm-tools">
+  // build HTML
+  /*
+   <div id="pm-tools">
       <br /><br />
       <em>Should be <b id="pm-total"></b>h</em><br />
       <a href="#" id="pm-update" class="hui-button hui-button-primary">
@@ -53,7 +52,47 @@ const initPM = (app, settings) => {
         <input id="pm-factor" type="number" value="${app.state.factor}" />
       </div>
     </div>
-    `,
+   */
+  const pmToolsWrapper = d.createElement('div');
+  pmToolsWrapper.id = 'pm-tools';
+  pmToolsWrapper.append(d.createElement('br'), d.createElement('br'));
+
+  const em = d.createElement('em');
+  const shouldBe = d.createTextNode('Should be ');
+  const pmTotalEl = d.createElement('b');
+  pmTotalEl.id = 'pm-total';
+  em.append(shouldBe, pmTotalEl, d.createElement('br'));
+  pmToolsWrapper.appendChild(em);
+
+  const pmUpdate = d.createElement('a');
+  pmUpdate.href = '#';
+  pmUpdate.id = 'pm-update';
+  pmUpdate.className = 'hui-button hui-button-primary';
+  pmUpdate.append(d.createTextNode('Update !'));
+  pmToolsWrapper.appendChild(pmUpdate);
+
+  const pmFactorBlock = d.createElement('div');
+  pmFactorBlock.className = 'pm-factor-block';
+  pmFactorBlock.style.display = settings.show_pm_factor_field ? 'block' : 'none';
+  pmFactorBlock.append(d.createElement('br'));
+
+  const labelFactor = d.createElement('label');
+  labelFactor.setAttribute('for', 'pm-factor');
+  labelFactor.textContent = 'Percentage: ';
+  pmFactorBlock.append(labelFactor, d.createElement('br'));
+
+  const inputFactor = d.createElement('input');
+  inputFactor.type = 'number';
+  inputFactor.id = 'pm-factor';
+  inputFactor.value = app.state.factor;
+  pmFactorBlock.append(inputFactor);
+
+  pmToolsWrapper.appendChild(pmFactorBlock);
+
+
+  pmField.insertAdjacentElement(
+    'afterend',
+    pmToolsWrapper,
   );
 
   // PM percentage events
@@ -83,7 +122,7 @@ const initPM = (app, settings) => {
   const pmTotal = d.getElementById('pm-total');
   app.totalTrigger.subscribe(() => {
     const total = (app.state.total * app.state.factor) / 100;
-    pmTotal.innerHTML = total;
+    pmTotal.textContent = total;
   });
 
   setTotal(app);
