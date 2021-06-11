@@ -50,4 +50,6 @@ This extension embed two js library:
 
  * `lib/rxjs-6.6.7.umd.min.js`
    * version: `6.6.7`
-   * source (npm): https://unpkg.com/browse/rxjs@6.6.7/bundles/rxjs.umd.min.js
+   * Github: https://github.com/ReactiveX/RxJS/tree/6.6.7 (no committed build, see below)
+   * MD5 (lib/rxjs-6.6.7.umd.min.js) = `79364c51ff304af33a1dae2cc3144fbc`
+   * instruction: `git clone git@github.com:ReactiveX/rxjs.git && cd rxjs && git checkout 6.6.7 && npm install && md5 dist/global/rxjs.umd.min.js`
