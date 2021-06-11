@@ -81,19 +81,20 @@ const airtableSelector = (templates, types) => {
   d.getElementById('invoice_item_rows')
     .querySelectorAll('tr')
     .forEach((element) => {
-      const select = element.querySelector('select');
-      const currentType = select.options[select.selectedIndex].value;
+      const itemTypeSelect = element.querySelector('select');
+      const currentType = itemTypeSelect.options[itemTypeSelect.selectedIndex]
+        .value;
 
       // Restart select generator if type changes
-      select.addEventListener('change', () => {
+      itemTypeSelect.addEventListener('change', () => {
         airtableSelector(templates, types);
       });
 
-      // Constructe select's options based on row type
+      // Construct select's options based on row type
       const options = templates.map((item, key) => {
         // Check if item is sane
         if (undefined === item.fields.types || undefined === item.fields.name) {
-          return '';
+          return null;
         }
 
         // Collect and validate item types
@@ -102,25 +103,32 @@ const airtableSelector = (templates, types) => {
           acc.push(relatedType.fields.name);
           return acc;
         }, []);
-        if (!availableTypes.includes(currentType)) return '';
+        if (!availableTypes.includes(currentType)) return null;
 
-        return `
-          <option value="${item.id}">👉 ${item.fields.name}</option>
-        `;
+        const templateOption = d.createElement('option');
+        templateOption.value = item.id;
+        templateOption.textContent = item.fields.name;
+
+        return templateOption;
       });
 
       // Create select with options
-      element.querySelector('textarea').insertAdjacentHTML(
+      const airtableSelectTemplate = d.createElement('select');
+      airtableSelectTemplate.className = 'select-template';
+      airtableSelectTemplate.name = 'airtable-template';
+      airtableSelectTemplate.style.marginBottom = '1em';
+      airtableSelectTemplate.style.fontSize = '14px;';
+
+      const defaultOption = d.createElement('option');
+      defaultOption.textContent = '- Apply a template to the following description -';
+      defaultOption.value = element.getAttribute('id');
+      airtableSelectTemplate.appendChild(defaultOption);
+
+      options.forEach((item) => item ? airtableSelectTemplate.appendChild(item) : null);
+
+      element.querySelector('textarea').insertAdjacentElement(
         'beforebegin',
-        `<select
-          name="airtable-template"
-          class="select-template"
-          style="margin-bottom: 1em; font-size: 14px;">
-            <option value="${element.getAttribute('id')}">
-              - Apply a template to the following description -
-            </option>
-            ${options}
-          </select>`,
+        airtableSelectTemplate,
       );
     });
 
