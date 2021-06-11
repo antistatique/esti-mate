@@ -1,3 +1,6 @@
+*1.6.1* (2021-06-11)
+ - Remove webRequest permissions
+
 *1.6.0* (2021-06-11)
  - Adaptation to the new harvest estimate HTML markup
  - refactor code to not use innerHTML / insertAdjacentHTML and only the DOM API. See #5
