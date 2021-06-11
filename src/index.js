@@ -26,7 +26,7 @@ ready(() => {
     targetQueryElement = '.client-doc-notes';
     appView = 'view';
   } else if (d.querySelector('#edit_estimate')) {
-    targetQueryElement = '#edit_estimate > .mt-20';
+    targetQueryElement = '#edit_estimate > .pds-mt-md';
     appView = 'edit';
   } else {
     // page not compatible with this plugin
@@ -37,9 +37,9 @@ ready(() => {
   d.querySelector(targetQueryElement).insertAdjacentHTML(
     'beforebegin',
     `
-    <div class="clearfix"  style="margin: 50px 0;">
-      <div id="summary-wrapper" class="span-12"></div>
-      <div id="todo-wrapper" class="span-4"></div>
+    <div class="pds-row clearfix"  style="margin: 50px 0;">
+      <div id="summary-wrapper" class="pds-column"></div>
+      <div id="todo-wrapper" class="pds-column-4"></div>
     </div>
     `,
   );
@@ -66,15 +66,15 @@ ready(() => {
   // Reset everything after reordering rows
   if (d.getElementById('close_sort_items_link')) {
     d.getElementById('close_sort_items_link')
-      .querySelector('a')
+      .querySelector('button')
       .addEventListener('click', () => {
         init();
       });
   }
 
   // Reset everything after removing rows
-  if (d.querySelector('a.delete, a#add_line_item_link')) {
-    d.querySelectorAll('a.delete, a#add_line_item_link').forEach((element) => {
+  if (d.querySelector('button[data-analytics-element-id="estimate-edit-remove-line-item"], #add_line_item_link')) {
+    d.querySelectorAll('button[data-analytics-element-id="estimate-edit-remove-line-item"], #add_line_item_link').forEach((element) => {
       element.addEventListener('click', () => {
         setTimeout(() => init(), 300);
       });

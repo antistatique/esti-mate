@@ -110,8 +110,8 @@ const airtableSelector = (templates, types) => {
       });
 
       // Create select with options
-      element.querySelector('.description').insertAdjacentHTML(
-        'afterbegin',
+      element.querySelector('textarea').insertAdjacentHTML(
+        'beforebegin',
         `<select
           name="airtable-template"
           class="select-template"
