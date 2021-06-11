@@ -47,6 +47,7 @@ This extension embed two js library:
  * `lib/browser-polyfill.js`
    * version: `0.8.0`
    * source (npm): https://unpkg.com/browse/webextension-polyfill@0.8.0/dist/browser-polyfill.js
+   * Github: https://github.com/mozilla/webextension-polyfill/tree/0.8.0
 
  * `lib/rxjs-6.6.7.umd.min.js`
    * version: `6.6.7`
