@@ -124,7 +124,9 @@ const airtableSelector = (templates, types) => {
       defaultOption.value = element.getAttribute('id');
       airtableSelectTemplate.appendChild(defaultOption);
 
-      options.forEach((item) => item ? airtableSelectTemplate.appendChild(item) : null);
+      options.forEach((item) => {
+        if (item) airtableSelectTemplate.appendChild(item);
+      });
 
       element.querySelector('textarea').insertAdjacentElement(
         'beforebegin',
@@ -150,15 +152,32 @@ const airtableTodo = (todos) => {
   const todoList = todos
     .reverse()
     .map((todo) => {
-      return `<label><input type="checkbox"> ${todo.fields.content}</label>`;
-    })
-    .join('<br>');
+      const label = d.createElement('label');
+      const checkbox = d.createElement('input');
+      checkbox.type = 'checkbox';
+      const value = d.createTextNode(` ${todo.fields.content}`);
+      label.appendChild(checkbox);
+      label.appendChild(value);
 
-  d.getElementById('todo-wrapper').innerHTML = `
-    <div>
-      <h3>⚠️ Avant d'envoyer</h3><br>
-      ${todoList}
-    </div>`;
+      return label;
+    });
+
+  // build the HTML
+  const wrapper = d.getElementById('todo-wrapper');
+  wrapper.textContent = ''; // remove all child
+
+  const divWrapper = d.createElement('div');
+  wrapper.appendChild(divWrapper);
+
+  const todoTitle = d.createElement('h3');
+  todoTitle.textContent = '⚠️ Avant d\'envoyer';
+  divWrapper.appendChild(todoTitle);
+  divWrapper.appendChild(d.createElement('br'));
+
+  todoList.forEach((item) => {
+    divWrapper.appendChild(item);
+    divWrapper.appendChild(d.createElement('br'));
+  });
 };
 
 /**
