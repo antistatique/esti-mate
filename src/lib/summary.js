@@ -18,11 +18,11 @@ const generateSummaryEdit = () => {
       const select = element.querySelector('select');
       const type = select.options[select.selectedIndex].value;
       const qty = parseFloat(element.querySelector('.js-change-total').value);
+      const amountAsText = element.querySelector('.amount').innerText;
       const amount = parseFloat(
-        element
-          .querySelector('.amount')
-          .innerText.substring(4) // Remove 'CHF '
-          .replace(/'/, ''), // Remove currency formatting 10'500 -> 10500
+        amountAsText
+          .substring(0, amountAsText.length - 4) // Remove ' CHF' suffix
+          .replace(/'/, '') // Remove currency formatting 10'500 -> 10500
       );
 
       totalQty += qty;
@@ -71,11 +71,10 @@ const generateSummaryView = () => {
       const select = element.querySelector('select');
       const type = element.querySelector('.item-type').innerText.trim();
       const qty = parseFloat(element.querySelector('.item-qty').innerText.trim());
+      const amountAsText = element.querySelector('.item-amount').innerText.trim();
       const amount = parseFloat(
-        element
-          .querySelector('.item-amount')
-          .innerText.trim()
-          .substring(4) // Remove 'CHF '
+        amountAsText
+          .substring(0, amountAsText.length - 4) // Remove ' CHF' suffix
           .replace(/'/, ''), // Remove currency formatting 10'500 -> 10500
       );
 
