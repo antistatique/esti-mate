@@ -21,6 +21,7 @@
     {
       "matches": [
         "*://*.harvestapp.com/estimates/*/edit",
+        "*://*.harvestapp.com/estimates/*/duplicate",
         "*://*.harvestapp.com/estimates/new",
         "*://*.harvestapp.com/estimates/*"
       ],
