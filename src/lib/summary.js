@@ -1,3 +1,9 @@
+const extractFloatAmountFromText = function (amountAsText) {
+  // this works for number format: 1'234.56 (but not for 1 234,56)
+  // check https://*.harvestapp.com/company/preferences/edit
+  return parseFloat(amountAsText.replaceAll(/[^0-9.]/g, ''));
+};
+
 /**
  * Render a summray table at the bottom of the estimate during edition
  */
@@ -19,11 +25,7 @@ const generateSummaryEdit = () => {
       const type = select.options[select.selectedIndex].value;
       const qty = parseFloat(element.querySelector('.js-change-total').value);
       const amountAsText = element.querySelector('.amount').innerText;
-      const amount = parseFloat(
-        amountAsText
-          .substring(0, amountAsText.length - 4) // Remove ' CHF' suffix
-          .replace(/'/, '') // Remove currency formatting 10'500 -> 10500
-      );
+      const amount = extractFloatAmountFromText(amountAsText);
 
       totalQty += qty;
       totalAmount += amount;
@@ -72,11 +74,7 @@ const generateSummaryView = () => {
       const type = element.querySelector('.item-type').innerText.trim();
       const qty = parseFloat(element.querySelector('.item-qty').innerText.trim());
       const amountAsText = element.querySelector('.item-amount').innerText.trim();
-      const amount = parseFloat(
-        amountAsText
-          .substring(0, amountAsText.length - 4) // Remove ' CHF' suffix
-          .replace(/'/, ''), // Remove currency formatting 10'500 -> 10500
-      );
+      const amount = extractFloatAmountFromText(amountAsText);
 
       totalQty += qty;
       totalAmount += amount;
