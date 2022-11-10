@@ -86,6 +86,7 @@ const airtableSelector = (templates, types) => {
         .value;
 
       // Restart select generator if type changes
+      // @TODO: don't add multiple time the same addEventListener. Remove this from the forEach.
       itemTypeSelect.addEventListener('change', () => {
         airtableSelector(templates, types);
       });
