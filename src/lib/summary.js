@@ -1,3 +1,9 @@
+const extractFloatAmountFromText = function (amountAsText) {
+  // this works for number format: 1'234.56 (but not for 1 234,56)
+  // check https://*.harvestapp.com/company/preferences/edit
+  return parseFloat(amountAsText.replaceAll(/[^0-9.]/g, ''));
+};
+
 /**
  * Render a summray table at the bottom of the estimate during edition
  */
@@ -18,12 +24,8 @@ const generateSummaryEdit = () => {
       const select = element.querySelector('select');
       const type = select.options[select.selectedIndex].value;
       const qty = parseFloat(element.querySelector('.js-change-total').value);
-      const amount = parseFloat(
-        element
-          .querySelector('.amount')
-          .innerText.substring(4) // Remove 'CHF '
-          .replace(/'/, ''), // Remove currency formatting 10'500 -> 10500
-      );
+      const amountAsText = element.querySelector('.amount').innerText;
+      const amount = extractFloatAmountFromText(amountAsText);
 
       totalQty += qty;
       totalAmount += amount;
@@ -60,7 +62,7 @@ const generateSummaryView = () => {
   let totalQty = 0;
   let totalAmount = 0;
 
-  if (!d.querySelector('.client-doc-rows') || d.querySelector('.edit_estimate')) {
+  if (!d.querySelector('.client-doc-rows') || d.querySelector('.edit_estimate') || d.querySelector('.new_estimate')) {
     return ;
   }
 
@@ -71,13 +73,8 @@ const generateSummaryView = () => {
       const select = element.querySelector('select');
       const type = element.querySelector('.item-type').innerText.trim();
       const qty = parseFloat(element.querySelector('.item-qty').innerText.trim());
-      const amount = parseFloat(
-        element
-          .querySelector('.item-amount')
-          .innerText.trim()
-          .substring(4) // Remove 'CHF '
-          .replace(/'/, ''), // Remove currency formatting 10'500 -> 10500
-      );
+      const amountAsText = element.querySelector('.item-amount').innerText.trim();
+      const amount = extractFloatAmountFromText(amountAsText);
 
       totalQty += qty;
       totalAmount += amount;

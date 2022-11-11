@@ -86,6 +86,7 @@ const airtableSelector = (templates, types) => {
         .value;
 
       // Restart select generator if type changes
+      // @TODO: don't add multiple time the same addEventListener. Remove this from the forEach.
       itemTypeSelect.addEventListener('change', () => {
         airtableSelector(templates, types);
       });
@@ -114,7 +115,7 @@ const airtableSelector = (templates, types) => {
 
       // Create select with options
       const airtableSelectTemplate = d.createElement('select');
-      airtableSelectTemplate.className = 'select-template';
+      airtableSelectTemplate.className = 'select-template pds-input pds-input-xs';
       airtableSelectTemplate.name = 'airtable-template';
       airtableSelectTemplate.style.marginBottom = '1em';
       airtableSelectTemplate.style.fontSize = '14px;';

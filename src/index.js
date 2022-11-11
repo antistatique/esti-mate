@@ -28,6 +28,9 @@ ready(() => {
   } else if (d.querySelector('#edit_estimate')) {
     targetQueryElement = '#edit_estimate > .pds-mt-md';
     appView = 'edit';
+  } else if (d.querySelector('#new_estimate')) {
+    targetQueryElement = '#new_estimate > .pds-mt-md';
+    appView = 'new';
   } else {
     // page not compatible with this plugin
     return false;
@@ -49,7 +52,7 @@ ready(() => {
     // Init summary generation
     app.generateSummary();
 
-    if ('edit' === appView) {
+    if ('edit' === appView || 'new' === appView) {
       // Generate PM tools
       const show_pm_factor_field = browser.storage.local.get('show_pm_factor_field');
       show_pm_factor_field.then(res => app.initPM(app, res));
