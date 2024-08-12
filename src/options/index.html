@@ -1,0 +1,28 @@
+<!-- File: src/options/index.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Esti'mate Options</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="settings-wrapper">
+    <h1>Esti'mate Options</h1>
+    <form id="options-form">
+      <label for="airtable-workspace">Airtable Workspace ID:</label>
+      <input type="text" id="airtable-workspace" name="airtableWorkspace">
+      
+      <label for="airtable-key">Airtable API Key:</label>
+      <input type="text" id="airtable-key" name="airtableKey">
+      
+      <label for="pm-percentage">Default PM Percentage:</label>
+      <input type="number" id="pm-percentage" name="pmPercentage" min="0" max="100">
+      
+      <button type="submit">Save</button>
+    </form>
+    <div id="status"></div>
+  </div>
+  <script src="index.js" type="module"></script>
+</body>
+</html>

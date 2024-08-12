@@ -1,21 +1,26 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Esti'mate",
-  "author": "Antistatique",
-  "version": "1.6.2",
+  "version": "2.0.0",
   "description": "Your Harvest estimate's best friend",
+  "author": "Antistatique",
   "homepage_url": "https://github.com/antistatique/esti-mate/",
-  "permissions": [
-    "*://api.airtable.com/*",
-    "storage"
-  ],
+  "permissions": ["storage"],
+  "host_permissions": ["*://api.airtable.com/*"],
+  "action": {
+    "default_icon": {
+      "48": "assets/icon.png",
+      "96": "assets/icon@2x.png"
+    }
+  },
   "options_ui": {
-    "page": "src/settings/index.html"
+    "page": "src/options/index.html",
+    "open_in_tab": false,
+"css": ["src/options/styles.css"]
   },
   "background": {
-    "scripts": [
-      "lib/browser-polyfill.js"
-    ]
+    "service_worker": "src/background/index.js",
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -25,15 +30,8 @@
         "*://*.harvestapp.com/estimates/new",
         "*://*.harvestapp.com/estimates/*"
       ],
-      "js": [
-        "lib/browser-polyfill.js",
-        "lib/rxjs-6.6.7.umd.min.js",
-        "src/lib/summary.js",
-        "src/lib/airtable.js",
-        "src/lib/pm.js",
-        "src/App.js",
-        "src/index.js"
-      ]
+      "js": ["src/content/index.js"],
+      "type": "module"
     }
   ],
   "icons": {

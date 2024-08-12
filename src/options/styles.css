@@ -1,44 +1,46 @@
-.settings-wrapper {
+/* File: src/options/styles.css */
+
+body {
+  font-family: Arial, sans-serif;
   font-size: 16px;
   padding: 30px;
-  border-radius: 10px;
   color: #fff;
   background: #f15a1b;
   background: -moz-linear-gradient(left, #f15a1b 0%, #f37f20 100%);
   background: -webkit-linear-gradient(left, #f15a1b 0%,#f37f20 100%);
   background: linear-gradient(to right, #f15a1b 0%,#f37f20 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f15a1b', endColorstr='#f37f20',GradientType=1 );
 }
 
-.settings-wrapper table td {
-  padding-bottom: 5px;
+.settings-wrapper {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
 }
 
-.settings-wrapper .feedback {
-  font-size: 14px;
-  margin-bottom: 10px;
-  padding: 5px;
-  background-color: #bff4b6;
-  border-radius: 5px;
-  color: green;
+h1 {
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
 }
 
 label {
   font-weight: bold;
+  margin-top: 10px;
 }
 
 input {
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
-  margin-left: 30px;
+  margin-top: 5px;
   font-size: 16px;
-}
-input[type="checkbox"] {
-  margin-left: 0;
 }
 
 button {
+  margin-top: 20px;
   padding: 10px 25px;
   background: #000000;
   border: none;
@@ -46,13 +48,20 @@ button {
   font-size: 16px;
   font-weight: bold;
   color: #f37f20;
-  transition:
-    background 0.25s,
-    color 0.25s;
+  transition: background 0.25s, color 0.25s;
 }
 
 button:hover {
-  background: #000000;
-  color: #ffffff;
+  background: #ffffff;
+  color: #f15a1b;
   cursor: pointer;
+}
+
+#status {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #bff4b6;
+  color: green;
+  display: none;
 }
