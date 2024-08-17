@@ -3,13 +3,21 @@
   "version": "2.0.0",
   "description": "Your Harvest estimate's best friend",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
-    "lint": "eslint src/**/*.js",
-    "lint:fix": "eslint src/**/*.js --fix"
+    "build": "rollup -c rollup.config.mjs",
+    "watch": "rollup -c rollup.config.mjs -w",
+    "start": "web-ext run --source-dir ./dist/",
+    "lint": "web-ext lint --source-dir ./dist/",
+    "build:ext": "npm run build && web-ext build --source-dir ./dist/"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "eslint": "*",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "*"
+    "eslint-plugin-import": "*",
+    "rollup": "^4.20.0",
+    "rollup-plugin-copy": "^3.5.0"
   }
 }

@@ -4,7 +4,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'getStorageData') {
-    chrome.storage.local.get(null, (items) => {
+    chrome.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
       sendResponse({ data: items });
     });
     return true;  // Will respond asynchronously

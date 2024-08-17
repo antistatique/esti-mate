@@ -28,8 +28,13 @@ export default class App {
 
   async loadSettings() {
     return new Promise((resolve) => {
-      chrome.runtime.sendMessage({ type: 'getStorageData' }, (response) => {
-        this.settings = response.data;
+      browser.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
+        this.settings = {
+          airtableWorkspace: items.airtableWorkspace || '',
+          airtableKey: items.airtableKey || '',
+          pmPercentage: items.pmPercentage || 25
+        };
+        console.log('Esti\'mate extension: Settings loaded', this.settings);
         resolve();
       });
     });

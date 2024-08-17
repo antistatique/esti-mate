@@ -1,5 +1,3 @@
-// File: src/content/index.js
-
 import App from './App.js';
 
 const ready = (fn) => {
@@ -13,6 +11,7 @@ const ready = (fn) => {
 };
 
 ready(() => {
+  console.log('ESTIMATE READY 4');
   const d = document;
   const app = new App();
   let targetQueryElement;
@@ -46,6 +45,7 @@ ready(() => {
 
   // Plugin's Init method (can be restarted on major changes)
   const init = () => {
+    console.log("Initialize Estimate Plugin");
     app.init(appView);
   };
 

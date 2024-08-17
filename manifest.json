@@ -5,8 +5,17 @@
   "description": "Your Harvest estimate's best friend",
   "author": "Antistatique",
   "homepage_url": "https://github.com/antistatique/esti-mate/",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ext-estimate@antistatique.net"
+    }
+  },
   "permissions": ["storage"],
-  "host_permissions": ["*://api.airtable.com/*"],
+  "host_permissions": [
+    "*://api.airtable.com/*",
+
+    "file:///*"
+  ],
   "action": {
     "default_icon": {
       "48": "assets/icon.png",
@@ -14,12 +23,11 @@
     }
   },
   "options_ui": {
-    "page": "src/options/index.html",
-    "open_in_tab": false,
-"css": ["src/options/styles.css"]
+    "page": "options.html",
+    "open_in_tab": false
   },
   "background": {
-    "service_worker": "src/background/index.js",
+    "scripts": ["background.js"],
     "type": "module"
   },
   "content_scripts": [
@@ -28,10 +36,12 @@
         "*://*.harvestapp.com/estimates/*/edit",
         "*://*.harvestapp.com/estimates/*/duplicate",
         "*://*.harvestapp.com/estimates/new",
-        "*://*.harvestapp.com/estimates/*"
+        "*://*.harvestapp.com/estimates/*",
+
+        "file:///Users/gde/Downloads/Estimate_Sandbox.html",
+        "file:///Users/gde/Downloads/Estimate_New_Sandbox.html"
       ],
-      "js": ["src/content/index.js"],
-      "type": "module"
+      "js": ["content.js"]
     }
   ],
   "icons": {

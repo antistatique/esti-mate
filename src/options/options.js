@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const status = document.getElementById('status');
 
   // Load saved options
-  chrome.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
+  browser.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
     document.getElementById('airtable-workspace').value = items.airtableWorkspace || '';
     document.getElementById('airtable-key').value = items.airtableKey || '';
     document.getElementById('pm-percentage').value = items.pmPercentage || 25;
@@ -14,16 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const airtableWorkspace = document.getElementById('airtable-workspace').value;
     const airtableKey = document.getElementById('airtable-key').value;
-    const pmPercentage = document.getElementById('pm-percentage').value;
+    const pmPercentage = parseInt(document.getElementById('pm-percentage').value, 10);
 
-    chrome.storage.local.set(
+    browser.storage.local.set(
       { airtableWorkspace, airtableKey, pmPercentage },
       () => {
+        status.style.display = 'block';
         status.textContent = 'Options saved.';
         setTimeout(() => {
           status.textContent = '';
+          status.style.display = 'none';
         }, 3000);
       }
     );
   });
 });
+

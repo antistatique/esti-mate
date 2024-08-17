@@ -1,5 +1,3 @@
-// File: src/content/components/AirtableIntegration.js
-
 import { fetchAirtableData } from '../../lib/airtable.js';
 
 export default class AirtableIntegration {

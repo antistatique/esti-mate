@@ -1,5 +1,3 @@
-// File: src/content/components/Summary.js
-
 export default class Summary {
   constructor() {
     this.summaryWrapper = null;
@@ -12,6 +10,7 @@ export default class Summary {
 
   updateSummary() {
     const isViewMode = document.querySelector('.client-doc-notes') !== null;
+    console.log('isViewMode', isViewMode);
     if (isViewMode) {
       this.generateSummaryView();
     } else {
@@ -24,7 +23,6 @@ export default class Summary {
     let totalQty = 0;
     let totalAmount = 0;
     const rows = document.querySelectorAll('#invoice_item_rows tr:not(:last-child)');
-
     rows.forEach((element) => {
       const select = element.querySelector('select');
       const type = select.options[select.selectedIndex].value;
@@ -53,13 +51,14 @@ export default class Summary {
     const summary = new Map();
     let totalQty = 0;
     let totalAmount = 0;
-    const rows = document.querySelectorAll('.client-doc-rows tbody tr');
+    const rows = document.querySelectorAll('.client-doc-items tbody tr');
 
     rows.forEach((element) => {
       const type = element.querySelector('.item-type').innerText.trim();
       const qty = parseFloat(element.querySelector('.item-qty').innerText.trim());
       const amountAsText = element.querySelector('.item-amount').innerText.trim();
       const amount = this.extractFloatAmountFromText(amountAsText);
+
 
       totalQty += qty;
       totalAmount += amount;
