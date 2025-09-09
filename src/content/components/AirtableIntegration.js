@@ -18,6 +18,7 @@ export default class AirtableIntegration {
       this.typeMapping = await this.fetchTypeMapping(settings);
       this.templates = await fetchAirtableData('templates', settings);
 
+      this.setupEventDelegation();
       this.createTemplateSelectors();
     } catch (error) {
       console.error('Failed to fetch Airtable data:', error);
@@ -41,6 +42,27 @@ export default class AirtableIntegration {
       }
   }
 
+  setupEventDelegation() {
+    // Remove existing delegation listener to prevent duplicates
+    const invoiceRows = document.querySelector('#invoice_item_rows');
+    if (invoiceRows && !invoiceRows.hasAttribute('data-airtable-listener')) {
+      invoiceRows.addEventListener('change', (e) => {
+        // Check if the changed element is a type select (not a template select)
+        if (e.target.matches('select:not(.airtable-template)')) {
+          const row = e.target.closest('tr');
+          const templateSelect = row.querySelector('.airtable-template');
+          
+          if (templateSelect) {
+            templateSelect.value = ''; // Reset template selection
+            this.updateTemplateOptions(templateSelect, e.target.value);
+          }
+        }
+      });
+      // Mark that we've added the listener to prevent duplicates
+      invoiceRows.setAttribute('data-airtable-listener', 'true');
+    }
+  }
+
   createTemplateSelectors() {
     document.querySelectorAll('#invoice_item_rows tr').forEach(row => {
       // Ensure we don't add duplicate template selectors
@@ -53,18 +75,28 @@ export default class AirtableIntegration {
         templateSelect.style.marginBottom = '1em';
         templateSelect.innerHTML = '<option value="">Select a template</option>';
         
-        this.templates.forEach(template => {
-            if (template.fields.types && template.fields.types.includes(this.typeMapping[currentType])) {
-                const option = document.createElement('option');
-                option.value = template.id;
-                option.textContent = template.fields.name;
-                templateSelect.appendChild(option);
-            }
-        });
+        // Populate templates for current type
+        this.updateTemplateOptions(templateSelect, currentType);
         
+        // Only add template selection listener (type changes handled by event delegation)
         templateSelect.addEventListener('change', (e) => this.applyTemplate(e.target));
         const descriptionField = row.querySelector('textarea');
         descriptionField.parentNode.insertBefore(templateSelect, descriptionField);
+      }
+    });
+  }
+
+  updateTemplateOptions(templateSelect, selectedType) {
+    // Clear existing options except the first one
+    templateSelect.innerHTML = '<option value="">Select a template</option>';
+    
+    // Add templates that match the selected type
+    this.templates.forEach(template => {
+      if (template.fields.types && template.fields.types.includes(this.typeMapping[selectedType])) {
+        const option = document.createElement('option');
+        option.value = template.id;
+        option.textContent = template.fields.name;
+        templateSelect.appendChild(option);
       }
     });
   }

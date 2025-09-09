@@ -19,10 +19,19 @@ export default class PMTools {
   removeIfAlreadyExisting() {
     const existingPMTools = document.getElementById('pm-tools');
     if (existingPMTools) {
+      // Remove event listeners BEFORE removing the elements
+      const pmUpdate = document.getElementById('pm-update');
+      const pmPercentage = document.getElementById('pm-percentage');
+      
+      if (pmUpdate) {
+        pmUpdate.removeEventListener('click', this.updatePMTotal);
+      }
+      if (pmPercentage) {
+        pmPercentage.removeEventListener('input', this.updatePMTotal);
+      }
+      
+      // Now remove the container
       existingPMTools.remove();
-      // remove the event listeners
-      document.getElementById('pm-update').removeEventListener('click', this.updatePMTotal);
-      document.getElementById('pm-percentage').removeEventListener('input', this.updatePMTotal);
     }
   }
 
