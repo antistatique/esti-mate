@@ -38,8 +38,9 @@ export default class PMTools {
   createPMTools() {
     const pmToolsHtml = `
       <div id="pm-tools">
-        <p>PM hours: <span id="pm-total"></span></p>
-        <button id="pm-update">Update PM hours</button>
+        <p style="margin: 0;">PM hours: <span id="pm-total"></span></p>
+        <a href="#" id="pm-update" style="color: #007cba; text-decoration: underline; cursor: pointer;">Update PM hours</a>
+        <br>
         <label for="pm-percentage">PM Percentage:</label>
         <input type="number" id="pm-percentage" value="${this.pmPercentage}">
       </div>
@@ -78,7 +79,8 @@ export default class PMTools {
     }
     this.calculateTotalHours();
     const pmHours = (this.totalHours * this.pmPercentage) / 100;
-    document.getElementById('pm-total').textContent = pmHours.toFixed(2);
+    const roundedPmHours = Math.ceil(pmHours);
+    document.getElementById('pm-total').textContent = roundedPmHours;
   }
 
   calculateTotalHours() {
@@ -86,9 +88,16 @@ export default class PMTools {
       .reduce((total, input) => total + parseFloat(input.value || 0), 0);
   }
 
-  updatePMField() {
+  updatePMField(e) {
+    e.preventDefault(); // Prevent default link behavior
+    
+    // Recalculate total hours first
+    this.calculateTotalHours();
+    
+    // Calculate and set PM hours (rounded up to nearest integer)
     const pmHours = (this.totalHours * this.pmPercentage) / 100;
-    this.pmField.value = pmHours.toFixed(2);
+    const roundedPmHours = Math.ceil(pmHours);
+    this.pmField.value = roundedPmHours;
     this.pmField.dispatchEvent(new Event('change', { bubbles: true }));
     this.app.generateSummary(); // Update the summary
   }
