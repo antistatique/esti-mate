@@ -1,3 +1,23 @@
+*2.0.2* (2025-09-09)
+ - ✨ Add selective sum calculation to summary table with checkboxes
+ - ✨ Add clickable Item Type names to toggle selections
+ - ✨ Add "Select All" checkbox for bulk operations
+ - 🐛 Fix Airtable pagination to load all templates (was missing templates beyond #100)
+ - 🐛 Fix view mode bug where selection totals increased abnormally
+ - 🐛 Fix Summary table not updating on quantity/price changes
+ - 🔧 Improve PMTools with better error handling and rounded calculations
+ - 🔧 Fix critical bugs in dynamic row handling and event management
+ - 🧹 Remove debug console.log statements for cleaner production build
+
+*2.0.1* (2025-09-09)
+ - 🔧 Fix Firefox compatibility and simplify packaging
+ - 🔧 Add complete publication automation and update documentation  
+ - 🔧 Fix v2 extension issues and update branding
+ - 🔧 Complete extension refactoring with modern ESLint and improved components
+ - 📦 Major refactoring to modern JavaScript architecture with Manifest V3 compatibility
+ - 📦 Migrate to Rollup build system with ES modules
+ - 📦 Update from Manifest V2 to Manifest V3 for Chrome and Firefox compatibility
+
 *1.6.1* (2021-06-11)
  - Remove webRequest permissions
 

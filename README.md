@@ -1,56 +1,143 @@
-# Esti'mate
+# Esti'mate ![icon](assets/icon@2x.png)
 
-![icon](assets/icon@2x.png)
+Esti'mate is a browser extension (tested on recent Firefox and Chrome) based on the [**WebExtensions API**](https://developer.mozilla.org/en-US/Add-ons/WebExtensions). It provides cool new features for making estimates on [Harvest](https://getharvest.com/):
 
-Esti'mate is a cross browser extension (tested on recent Firefox and Chrome) based on the [**WebExtensions API**](https://developer.mozilla.org/en-US/Add-ons/WebExtensions). It provides cool new features for making estimates on [Harvest](https://getharvest.com/) :
 - Project management calculation
 - Description templates
 - Todo/Reminder list
 - Summary table
 
-### Download on :
-# [🔥🦊 Firefox](https://addons.mozilla.org/fr/firefox/addon/esti-mate/) | [🍭 Chrome](https://chrome.google.com/webstore/detail/estimate/ahhoegjbkdhoembpkmnnghkmfinkkaog)
+## Download
 
-## Airtable settings
+- [🔥🦊 Firefox](https://addons.mozilla.org/fr/firefox/addon/esti-mate/)
+- [🍭 Chrome](https://chrome.google.com/webstore/detail/estimate/ahhoegjbkdhoembpkmnnghkmfinkkaog)
 
-Check the [full documentation](https://github.com/antistatique/esti-mate/blob/master/doc/airtable.md) to see how to setup **Airtable's template feature**.
+## Developer Guide
 
-## Contribution
+### Prerequisites
 
-You must install the NPM module for a fully working linter environment and the `web-ext` CLI by doing :
+- Node.js (LTS version recommended)
+- npm (comes with Node.js) or yarn
+
+### Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/antistatique/esti-mate.git
+   cd esti-mate
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   ```
+   or if you're using yarn:
+   ```
+   yarn
+   ```
+
+### Building the Extension
+
+Build the extension using Rollup:
 
 ```bash
-$ yarn
-// or
-$ npm install
+npm run build
 ```
 
-Then, you can either manually upload and reload your code according to your browser or start the following command :
+This compiles all source files and copies assets to the `dist/` directory, ready for browser loading.
+
+### Development
+
+#### Development Mode
+```bash
+npm run watch    # Build with file watching for development
+npm run start    # Run extension in Firefox (requires web-ext installed globally)
+```
+
+#### Manual Testing
+
+**Firefox:**
+1. Build the extension: `npm run build`
+2. Go to `about:debugging` → This Firefox → Load Temporary Add-on
+3. Select any file in the `dist/` folder
+
+**Chrome:**
+1. Build the extension: `npm run build`
+2. Go to `chrome://extensions`
+3. Enable "Developer mode"
+4. Click "Load unpacked" and select the `dist/` folder
+
+### Testing
+
+Currently, the project doesn't have automated tests. Manual testing should be performed:
+
+1. Test each feature of the extension thoroughly
+2. Test on both Firefox and Chrome to ensure cross-browser compatibility
+3. Test with different Harvest estimates to cover various scenarios
+
+### Code Quality
+
+**Linting:**
+```bash
+npm run lint:fix    # Fix auto-fixable ESLint issues
+```
+
+**Building for stores:**
+```bash
+npm run lint        # Lint the built extension (web-ext lint)
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Airtable Settings
+
+Check the [full documentation](https://github.com/antistatique/esti-mate/blob/master/doc/airtable.md) to see how to setup the **Airtable's template feature**.
+
+## Publication & Release
+
+### Automated Release Process
+
+**Quick Store Package (current version):**
+```bash
+npm run package:store     # Creates esti-mate.zip ready for Chrome Web Store
+```
+
+**Complete Release (version bump + packages):**
+```bash
+npm run prepare-release   # Bumps patch version, builds, and creates release packages
+```
+
+This creates:
+- `releases/esti-mate-v2.0.X.zip` - Chrome Web Store ready
+- `releases/esti-mate-source-v2.0.X.zip` - Firefox add-on review package
+
+### Manual Version Management
 
 ```bash
-$ yarn start
+npm run version:patch     # 2.0.0 → 2.0.1 (automatically syncs manifest.json)
+npm run version:minor     # 2.0.0 → 2.1.0 (automatically syncs manifest.json)
+npm run version:major     # 2.0.0 → 3.0.0 (automatically syncs manifest.json)
 ```
 
-## Release
-
-First thing first, update the version (in `package.json` and `manifest.json`) and execute :
+### Individual Browser Packages
 
 ```bash
-$ yarn build
+npm run package:chrome    # Chrome-specific package
+npm run package:firefox   # Firefox-specific package
 ```
 
-Then, connect to the [Firefox](https://addons.mozilla.org/en-US/developers/addon/esti-mate) or [Chrome](https://chrome.google.com/webstore/developer/dashboard) developer console and upload the new version (`./esti_mate-X.X.zip`).
+### Store Submission Process
 
-## For reviewers
-This extension embed two js library:
+1. Run `npm run prepare-release` to create versioned packages
+2. **Chrome Web Store**: Upload `releases/esti-mate-v2.0.X.zip`
+3. **Firefox Add-ons**: Upload both the extension zip and source code zip
+4. Create GitHub release with version tag
+5. Update store descriptions if needed
 
- * `lib/browser-polyfill.js`
-   * version: `0.8.0`
-   * source (npm): https://unpkg.com/browse/webextension-polyfill@0.8.0/dist/browser-polyfill.js
-   * Github: https://github.com/mozilla/webextension-polyfill/tree/0.8.0
+**Note**: Version numbers are automatically synchronized between `package.json` and `manifest.json`.
 
- * `lib/rxjs-6.6.7.umd.min.js`
-   * version: `6.6.7`
-   * Github: https://github.com/ReactiveX/RxJS/tree/6.6.7 (no committed build, see below)
-   * MD5 (lib/rxjs-6.6.7.umd.min.js) = `79364c51ff304af33a1dae2cc3144fbc`
-   * instruction: `git clone git@github.com:ReactiveX/rxjs.git && cd rxjs && git checkout 6.6.7 && npm install && md5 dist/global/rxjs.umd.min.js`
+## License
+
+This project is licensed under the MIT License.

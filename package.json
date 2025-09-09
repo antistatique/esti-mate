@@ -1,61 +1,30 @@
 {
   "name": "esti-mate",
-  "version": "1.6.1",
-  "description": "Your estimate best friend",
+  "version": "2.0.2",
+  "description": "Your Harvest estimate's best friend",
   "main": "src/index.js",
-  "repository": "git@github.com:antistatique/esti-mate.git",
-  "author": "Antistatique",
-  "license": "MIT",
+  "type": "module",
   "scripts": {
-    "start": "web-ext run",
-    "build": "rm -rf ./web-ext-artifacts && web-ext build --ignore-files package.json README.md yarn.lock doc && cp -rf ./web-ext-artifacts/*.* ./ && rm -rf ./web-ext-artifacts"
-  },
-  "eslintConfig": {
-    "extends": "eslint-config-airbnb",
-    "parser": "babel-eslint",
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "ecmaFeatures": {
-        "jsx": "true",
-        "spread": "true"
-      }
-    },
-    "env": {
-      "browser": "true",
-      "es6": "true"
-    },
-    "rules": {
-      "arrow-parens": [
-        2,
-        "as-needed",
-        {
-          "requireForBlockBody": true
-        }
-      ],
-      "arrow-body-style": 0,
-      "camelcase": 0,
-      "max-len": [
-        2,
-        {
-          "code": 80
-        }
-      ],
-      "global-require": 0,
-      "no-undef": 0,
-      "no-unused-vars": 0,
-      "class-methods-use-this": 0
-    }
+    "build": "rollup -c rollup.config.mjs",
+    "watch": "rollup -c rollup.config.mjs -w",
+    "start": "web-ext run --source-dir ./dist/",
+    "lint": "web-ext lint --source-dir ./dist/",
+    "lint:fix": "eslint --fix src/",
+    "package": "npm run build && cd dist && zip -r ../esti-mate.zip . && cd .. && echo \"✅ Extension package ready for both Chrome and Firefox stores: esti-mate.zip\"",
+    "version:patch": "npm version patch --no-git-tag-version && node scripts/sync-manifest-version.cjs",
+    "version:minor": "npm version minor --no-git-tag-version && node scripts/sync-manifest-version.cjs",
+    "version:major": "npm version major --no-git-tag-version && node scripts/sync-manifest-version.cjs",
+    "prepare-release": "npm run version:patch && npm run build && mkdir -p releases && cd dist && zip -r ../releases/esti-mate-v$(node -p \"require('../package.json').version\").zip . && cd .. && npm run source-code && echo \"✅ Release package created: releases/esti-mate-v$(node -p \"require('./package.json').version\").zip\" && echo \"✅ Source code package created: releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip\"",
+    "source-code": "mkdir -p releases && zip -r releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip . -x 'node_modules/*' 'dist/*' 'releases/*' '*.zip' '.git/*' '.idea/*' 'doc/*' '.claude/*' 'CLAUDE.md' '.DS_Store' && echo '✅ Source code package ready for Firefox submission'"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.5",
-    "eslint": "^5.0.1",
-    "eslint-config-airbnb": "^17.0.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.10.0",
-    "web-ext": "^7.3.1"
-  },
-  "dependencies": {
-    "webextension-polyfill": "^0.8.0"
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "eslint": "^9.9.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "*",
+    "globals": "^15.9.0",
+    "rollup": "^4.20.0",
+    "rollup-plugin-copy": "^3.5.0"
   }
 }
