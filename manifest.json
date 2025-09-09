@@ -43,6 +43,9 @@
         "file:///Users/gde/Downloads/Estimate_Sandbox.html",
         "file:///Users/gde/Downloads/Estimate_New_Sandbox.html"
       ],
+      "css": [
+        "content.css"
+      ],
       "js": [
         "content.js"
       ]

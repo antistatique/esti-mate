@@ -87,18 +87,11 @@ ready(() => {
       // Add click event listener for spell check
       spellCheckLink.addEventListener('click', (e) => {
         e.preventDefault();
-        console.log('Spell check triggered');
-        // TODO: Implement spell check functionality
-        spellCheckLink.textContent = 'Checking...';
-        
         // Close dropdown
         menuBackdrop.style.display = 'none';
         iaDropdownButton.setAttribute('aria-expanded', 'false');
-        
-        // Simulate API call for now
-        setTimeout(() => {
-          spellCheckLink.textContent = 'Spell check';
-        }, 2000);
+        // Dispatch a custom event so the SpellChecker component handles logic
+        document.dispatchEvent(new CustomEvent('estiMate:spell-check'));
       });
       
       // Toggle dropdown functionality

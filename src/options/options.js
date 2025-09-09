@@ -6,10 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const browserAPI = typeof chrome !== 'undefined' && chrome.storage ? chrome : browser;
 
   // Load saved options
-  browserAPI.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
+  browserAPI.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage', 'serverUrl'], (items) => {
     document.getElementById('airtable-workspace').value = items.airtableWorkspace || '';
     document.getElementById('airtable-key').value = items.airtableKey || '';
     document.getElementById('pm-percentage').value = items.pmPercentage || 25;
+    document.getElementById('server-url').value = items.serverUrl || '';
   });
 
   // Save options
@@ -18,9 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const airtableWorkspace = document.getElementById('airtable-workspace').value;
     const airtableKey = document.getElementById('airtable-key').value;
     const pmPercentage = parseInt(document.getElementById('pm-percentage').value, 10);
+    const serverUrl = document.getElementById('server-url').value.trim();
 
     browserAPI.storage.local.set(
-      { airtableWorkspace, airtableKey, pmPercentage },
+      { airtableWorkspace, airtableKey, pmPercentage, serverUrl },
       () => {
         status.style.display = 'block';
         status.textContent = 'Options saved.';
@@ -32,4 +34,3 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   });
 });
-
