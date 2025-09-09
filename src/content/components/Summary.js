@@ -6,6 +6,32 @@ export default class Summary {
   init() {
     this.summaryWrapper = document.getElementById('summary-wrapper');
     this.updateSummary();
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    // Use event delegation to listen for changes on quantity inputs
+    const invoiceRows = document.querySelector('#invoice_item_rows');
+    if (invoiceRows && !invoiceRows.hasAttribute('data-summary-listener')) {
+      invoiceRows.addEventListener('input', (e) => {
+        // Listen for changes on quantity inputs (.js-change-total) and type selects
+        if (e.target.matches('.js-change-total') || e.target.matches('select:not(.airtable-template)')) {
+          // Add small delay to let Harvest update its calculations first
+          setTimeout(() => this.updateSummary(), 100);
+        }
+      });
+      
+      // Also listen for change events (for selects and some inputs)
+      invoiceRows.addEventListener('change', (e) => {
+        if (e.target.matches('.js-change-total') || e.target.matches('select:not(.airtable-template)')) {
+          // Add small delay to let Harvest update its calculations first
+          setTimeout(() => this.updateSummary(), 100);
+        }
+      });
+      
+      // Mark that we've added the listener to prevent duplicates
+      invoiceRows.setAttribute('data-summary-listener', 'true');
+    }
   }
 
   updateSummary() {
