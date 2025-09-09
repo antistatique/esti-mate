@@ -2,17 +2,28 @@ export default class PMTools {
   constructor() {
     this.pmField = null;
     this.totalHours = 0;
-    this.pmPercentage = 25; // Default value
     this.app = null;
   }
 
   init(settings, app) {
     this.app = app;
     this.pmField = document.querySelector('#invoice_item_rows tr:last-of-type .quantity input');
-    this.pmPercentage = settings.pmPercentage || this.pmPercentage;
+    this.pmPercentage = settings.pmPercentage;
+
+    this.removeIfAlreadyExisting();
     this.createPMTools();
     this.addEventListeners();
     this.updatePMTotal();
+  }
+
+  removeIfAlreadyExisting() {
+    const existingPMTools = document.getElementById('pm-tools');
+    if (existingPMTools) {
+      existingPMTools.remove();
+      // remove the event listeners
+      document.getElementById('pm-update').removeEventListener('click', this.updatePMTotal);
+      document.getElementById('pm-percentage').removeEventListener('input', this.updatePMTotal);
+    }
   }
 
   createPMTools() {
@@ -28,17 +39,32 @@ export default class PMTools {
   }
 
   addEventListeners() {
-    document.getElementById('pm-update').addEventListener('click', () => this.updatePMField());
-    document.getElementById('pm-percentage').addEventListener('input', (e) => {
+    // Scope event listeners to the row where PM tools were added
+    const pmToolsDiv = document.querySelector('#invoice_item_rows tr:last-of-type #pm-tools');
+    
+    // Event listener for updating PM field
+    pmToolsDiv.querySelector('#pm-update').addEventListener('click', (e) => this.updatePMField(e));
+
+    // Event listener for percentage input change
+    pmToolsDiv.querySelector('#pm-percentage').addEventListener('input', (e) => {
       this.pmPercentage = parseFloat(e.target.value);
       this.updatePMTotal();
     });
-    document.querySelectorAll('#invoice_item_rows tr:not(:last-child) .quantity input').forEach(input => {
-      input.addEventListener('input', () => this.updatePMTotal());
-    });
+
+    // Attach input event listener only once at the parent level using event delegation
+    const invoiceRows = document.querySelector('#invoice_item_rows');
+    invoiceRows.removeEventListener('input', this.onQuantityInputChange); // Ensure no duplicate listeners
+    invoiceRows.addEventListener('input', this.onQuantityInputChange.bind(this));
   }
 
-  updatePMTotal() {
+  onQuantityInputChange(e) {
+    if (e.target.closest('tr') && e.target.matches('.quantity input')) {
+      this.updatePMTotal();
+    }
+  }
+
+  updatePMTotal(e) {
+    e.preventDefault();
     this.calculateTotalHours();
     const pmHours = (this.totalHours * this.pmPercentage) / 100;
     document.getElementById('pm-total').textContent = pmHours.toFixed(2);
