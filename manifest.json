@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Esti'mate v2",
+  "name": "Esti'mate",
   "version": "2.0.1",
   "description": "Your Harvest estimate's best friend",
   "author": "Antistatique",
   "homepage_url": "https://github.com/antistatique/esti-mate/",
   "browser_specific_settings": {
     "gecko": {
-      "id": "ext-estimate@antistatique.net"
+      "id": "{34c1674f-f75a-4a65-9282-a3ea1a92dcf6}"
     }
   },
   "permissions": [

@@ -1,6 +1,6 @@
 {
   "name": "esti-mate",
-  "version": "2.0.2",
+  "version": "2.0.1",
   "description": "Your Harvest estimate's best friend",
   "main": "src/index.js",
   "type": "module",
@@ -10,15 +10,12 @@
     "start": "web-ext run --source-dir ./dist/",
     "lint": "web-ext lint --source-dir ./dist/",
     "lint:fix": "eslint --fix src/",
-    "package": "npm run build && npm run package:chrome && npm run package:firefox",
-    "package:chrome": "cd dist && zip -r ../esti-mate-chrome.zip .",
-    "package:firefox": "cd dist && zip -r ../esti-mate-firefox.zip .",
-    "package:store": "npm run build && cd dist && zip -r ../esti-mate.zip . && cd .. && echo \"✅ Extension package ready for Chrome Web Store: esti-mate.zip\"",
+    "package": "npm run build && cd dist && zip -r ../esti-mate.zip . && cd .. && echo \"✅ Extension package ready for both Chrome and Firefox stores: esti-mate.zip\"",
     "version:patch": "npm version patch --no-git-tag-version && node scripts/sync-manifest-version.cjs",
     "version:minor": "npm version minor --no-git-tag-version && node scripts/sync-manifest-version.cjs",
     "version:major": "npm version major --no-git-tag-version && node scripts/sync-manifest-version.cjs",
     "prepare-release": "npm run version:patch && npm run build && mkdir -p releases && cd dist && zip -r ../releases/esti-mate-v$(node -p \"require('../package.json').version\").zip . && cd .. && npm run source-code && echo \"✅ Release package created: releases/esti-mate-v$(node -p \"require('./package.json').version\").zip\" && echo \"✅ Source code package created: releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip\"",
-    "source-code": "mkdir -p releases && zip -r releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip . -x 'node_modules/*' 'dist/*' 'releases/*' '*.zip' '.git/*' '.idea/*' 'doc/estimates/*' '.DS_Store' && echo '✅ Source code package ready for Firefox submission'"
+    "source-code": "mkdir -p releases && zip -r releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip . -x 'node_modules/*' 'dist/*' 'releases/*' '*.zip' '.git/*' '.idea/*' 'doc/*' '.claude/*' 'CLAUDE.md' '.DS_Store' && echo '✅ Source code package ready for Firefox submission'"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^26.0.1",
