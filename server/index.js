@@ -1,9 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import spellingRouter from './routes/spelling.js';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 
-dotenv.config();
+// Load .env next to this file, regardless of where the server is launched from
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: join(__dirname, '.env') });
 
 const app = express();
 
@@ -60,12 +63,21 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
   if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
 });
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
+app.get('/config', (_req, res) => {
+  res.json({
+    port: PORT,
+    openai: !!process.env.OPENAI_API_KEY,
+    allowedOriginsCount: allowedOrigins.length,
+  });
+});
+// Import routes after env is loaded so they see OPENAI_API_KEY
+const spellingRouter = (await import('./routes/spelling.js')).default;
 app.use('/check-spelling', spellingRouter);
 
 app.use((err, _req, res, _next) => {
@@ -75,4 +87,5 @@ app.use((err, _req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`Spellcheck server listening on :${PORT}`);
+  console.log(`Config: OPENAI ${process.env.OPENAI_API_KEY ? 'set' : 'missing'}, ALLOWED_ORIGINS ${allowedOrigins.length}`);
 });
