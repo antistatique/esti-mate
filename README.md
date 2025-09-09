@@ -38,32 +38,34 @@ Esti'mate is a browser extension (tested on recent Firefox and Chrome) based on 
 
 ### Building the Extension
 
-We use ES modules directly without a bundler. To prepare the extension for use:
+Build the extension using Rollup:
 
-1. Ensure all files are in their correct locations as per the project structure.
-2. If you've made changes to the manifest or other JSON files, validate them to ensure they're correct.
+```bash
+npm run build
+```
 
-### Running the Extension
+This compiles all source files and copies assets to the `dist/` directory, ready for browser loading.
 
-#### In Firefox
+### Development
 
-1. Install web-ext:
-   ```
-   npm install -g web-ext
-   ```
+#### Development Mode
+```bash
+npm run watch    # Build with file watching for development
+npm run start    # Run extension in Firefox (requires web-ext installed globally)
+```
 
-2. Run the extension:
-   ```
-   web-ext run
-   ```
+#### Manual Testing
 
-This will open a new Firefox instance with the extension installed.
+**Firefox:**
+1. Build the extension: `npm run build`
+2. Go to `about:debugging` → This Firefox → Load Temporary Add-on
+3. Select any file in the `dist/` folder
 
-#### In Chrome
-
-1. Open Chrome and navigate to `chrome://extensions`
-2. Enable "Developer mode" in the top right corner
-3. Click "Load unpacked" and select the root directory of your project
+**Chrome:**
+1. Build the extension: `npm run build`
+2. Go to `chrome://extensions`
+3. Enable "Developer mode"
+4. Click "Load unpacked" and select the `dist/` folder
 
 ### Testing
 
@@ -73,30 +75,16 @@ Currently, the project doesn't have automated tests. Manual testing should be pe
 2. Test on both Firefox and Chrome to ensure cross-browser compatibility
 3. Test with different Harvest estimates to cover various scenarios
 
-### Linting
+### Code Quality
 
-To maintain code quality, we use ESLint. Run the linter with:
-
-```
-npm run lint
-```
-
-or if you're using yarn:
-
-```
-yarn lint
+**Linting:**
+```bash
+npm run lint:fix    # Fix auto-fixable ESLint issues
 ```
 
-Fix auto-fixable issues with:
-
-```
-npm run lint -- --fix
-```
-
-or
-
-```
-yarn lint --fix
+**Building for stores:**
+```bash
+npm run lint        # Lint the built extension (web-ext lint)
 ```
 
 ## Contributing
@@ -107,13 +95,48 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 Check the [full documentation](https://github.com/antistatique/esti-mate/blob/master/doc/airtable.md) to see how to setup the **Airtable's template feature**.
 
-## Release Process
+## Publication & Release
 
-1. Update the version in both `package.json` and `manifest.json`
-2. Create a new Git tag with the version number
-3. Push the tag to GitHub
-4. Create a new release on GitHub, describing the changes
-5. Submit the new version to Firefox and Chrome web stores
+### Automated Release Process
+
+**Quick Store Package (current version):**
+```bash
+npm run package:store     # Creates esti-mate.zip ready for Chrome Web Store
+```
+
+**Complete Release (version bump + packages):**
+```bash
+npm run prepare-release   # Bumps patch version, builds, and creates release packages
+```
+
+This creates:
+- `releases/esti-mate-v2.0.X.zip` - Chrome Web Store ready
+- `releases/esti-mate-source-v2.0.X.zip` - Firefox add-on review package
+
+### Manual Version Management
+
+```bash
+npm run version:patch     # 2.0.0 → 2.0.1 (automatically syncs manifest.json)
+npm run version:minor     # 2.0.0 → 2.1.0 (automatically syncs manifest.json)
+npm run version:major     # 2.0.0 → 3.0.0 (automatically syncs manifest.json)
+```
+
+### Individual Browser Packages
+
+```bash
+npm run package:chrome    # Chrome-specific package
+npm run package:firefox   # Firefox-specific package
+```
+
+### Store Submission Process
+
+1. Run `npm run prepare-release` to create versioned packages
+2. **Chrome Web Store**: Upload `releases/esti-mate-v2.0.X.zip`
+3. **Firefox Add-ons**: Upload both the extension zip and source code zip
+4. Create GitHub release with version tag
+5. Update store descriptions if needed
+
+**Note**: Version numbers are automatically synchronized between `package.json` and `manifest.json`.
 
 ## License
 

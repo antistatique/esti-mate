@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Esti'mate v2",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Your Harvest estimate's best friend",
   "author": "Antistatique",
   "homepage_url": "https://github.com/antistatique/esti-mate/",
@@ -10,10 +10,11 @@
       "id": "ext-estimate@antistatique.net"
     }
   },
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "host_permissions": [
     "*://api.airtable.com/*",
-
     "file:///*"
   ],
   "action": {
@@ -27,7 +28,9 @@
     "open_in_tab": false
   },
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "background.js"
+    ],
     "type": "module"
   },
   "content_scripts": [
@@ -37,11 +40,12 @@
         "*://*.harvestapp.com/estimates/*/duplicate",
         "*://*.harvestapp.com/estimates/new",
         "*://*.harvestapp.com/estimates/*",
-
         "file:///Users/gde/Downloads/Estimate_Sandbox.html",
         "file:///Users/gde/Downloads/Estimate_New_Sandbox.html"
       ],
-      "js": ["content.js"]
+      "js": [
+        "content.js"
+      ]
     }
   ],
   "icons": {
