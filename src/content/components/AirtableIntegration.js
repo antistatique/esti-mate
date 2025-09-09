@@ -18,6 +18,7 @@ export default class AirtableIntegration {
       this.typeMapping = await this.fetchTypeMapping(settings);
       this.templates = await fetchAirtableData('templates', settings);
 
+      console.log('✅ Airtable data loaded:', this.templates.length, 'templates,', Object.keys(this.typeMapping).length, 'types');
 
       this.setupEventDelegation();
       this.createTemplateSelectors();
