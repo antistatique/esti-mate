@@ -1,10 +1,10 @@
-chrome.runtime.onInstalled.addListener(() => {
+browser.runtime.onInstalled.addListener(() => {
   console.log('Esti\'mate extension installed');
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'getStorageData') {
-    chrome.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
+    browser.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
       sendResponse({ data: items });
     });
     return true;  // Will respond asynchronously

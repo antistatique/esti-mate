@@ -64,7 +64,9 @@ export default class PMTools {
   }
 
   updatePMTotal(e) {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     this.calculateTotalHours();
     const pmHours = (this.totalHours * this.pmPercentage) / 100;
     document.getElementById('pm-total').textContent = pmHours.toFixed(2);
