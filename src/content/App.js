@@ -28,7 +28,10 @@ export default class App {
 
   async loadSettings() {
     return new Promise((resolve) => {
-      browser.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
+      // Use chrome or browser API for cross-browser compatibility
+      const browserAPI = typeof chrome !== 'undefined' && chrome.storage ? chrome : browser;
+      
+      browserAPI.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
         this.settings = {
           airtableWorkspace: items.airtableWorkspace || '',
           airtableKey: items.airtableKey || '',
