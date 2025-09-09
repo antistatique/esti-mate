@@ -38,7 +38,6 @@ export default class Summary {
 
   updateSummary() {
     const isViewMode = document.querySelector('.client-doc-notes') !== null;
-    console.log('isViewMode', isViewMode);
     if (isViewMode) {
       this.generateSummaryView();
     } else {

@@ -34,7 +34,6 @@ export default class App {
           airtableKey: items.airtableKey || '',
           pmPercentage: items.pmPercentage || 25
         };
-        console.log('Esti\'mate extension: Settings loaded', this.settings);
         resolve();
       });
     });
