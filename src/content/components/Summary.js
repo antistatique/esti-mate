@@ -2,6 +2,7 @@ export default class Summary {
   constructor() {
     this.summaryWrapper = null;
     this.selectedItems = new Set();
+    this.lastSummaryData = null;
   }
 
   init() {
@@ -105,6 +106,8 @@ export default class Summary {
   }
 
   renderSummary(summary, totalQty, totalAmount) {
+    // Store the summary data for later use
+    this.lastSummaryData = { summary, totalQty, totalAmount };
     const title = document.createElement('h4');
     title.className = 'no-print';
     title.textContent = 'Résumé (non visible par le client)';
@@ -215,8 +218,8 @@ export default class Summary {
         } else {
           this.selectedItems.delete(itemType);
         }
-        // Re-render to update selected totals
-        this.updateSummary();
+        // Only re-render the selection totals, don't recalculate the entire summary
+        this.updateSelectionTotals();
       } else if (e.target.matches('#select-all-summary')) {
         // Handle select all checkbox
         const checkboxes = this.summaryWrapper.querySelectorAll('.summary-item-checkbox');
@@ -233,8 +236,8 @@ export default class Summary {
             checkbox.checked = false;
           });
         }
-        // Re-render to update selected totals
-        this.updateSummary();
+        // Only re-render the selection totals, don't recalculate the entire summary
+        this.updateSelectionTotals();
       }
     });
     
@@ -252,6 +255,41 @@ export default class Summary {
     
     // Mark that we've added the listener
     this.summaryWrapper.setAttribute('data-checkbox-listener', 'true');
+  }
+
+  updateSelectionTotals() {
+    if (!this.lastSummaryData) {
+      return;
+    }
+    
+    const { summary, totalQty, totalAmount } = this.lastSummaryData;
+    const selectedTotals = this.calculateSelectedTotals(summary);
+    
+    // Find the tfoot element and update only the selection row
+    const tfoot = this.summaryWrapper.querySelector('tfoot');
+    if (tfoot) {
+      let selectedRowHtml = '';
+      if (selectedTotals.qty > 0) {
+        selectedRowHtml = `
+          <tr class="selected-total" style="background-color: #f0f8ff; border: 2px solid #007cba;">
+            <td class="item-select desktop-only"></td>
+            <td class="item-type desktop-only" style="font-style: italic;">Sélection</td>
+            <td class="item-qty desktop-only" style="font-weight: bold;">${selectedTotals.qty}</td>
+            <td class="item-amount" style="font-weight: bold;">${selectedTotals.amount.toFixed(2)}</td>
+          </tr>
+        `;
+      }
+      
+      tfoot.innerHTML = `
+        <tr class="total">
+          <td class="item-select desktop-only"></td>
+          <td class="item-type desktop-only">Totaux de l'estimation</td>
+          <td class="item-qty desktop-only">${totalQty}</td>
+          <td class="item-amount">${totalAmount.toFixed(2)}</td>
+        </tr>
+        ${selectedRowHtml}
+      `;
+    }
   }
 
   extractFloatAmountFromText(amountAsText) {
