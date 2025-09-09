@@ -56,8 +56,8 @@ ready(() => {
       iaDropdownButton.setAttribute('type', 'button');
       iaDropdownButton.setAttribute('aria-controls', 'ia-dropdown-menu');
       
-      // Add IA text and chevron icon
-      iaDropdownButton.innerHTML = `IA Tools<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-label="Down chevron icon" aria-hidden="true"><polyline points="5 9 12 17 19 9"></polyline></svg>`;
+      // Add IA text and chevron icon (label wrapped for easy runtime updates)
+      iaDropdownButton.innerHTML = `<span class="ia-label">IA Tools</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-label="Down chevron icon" aria-hidden="true"><polyline points="5 9 12 17 19 9"></polyline></svg>`;
       
       // Create dropdown menu structure
       const menuBackdrop = d.createElement('div');

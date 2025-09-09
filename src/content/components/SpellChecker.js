@@ -6,6 +6,7 @@ export default class SpellChecker {
     this.app = null;
     this.panel = new CorrectionPanel();
     this.bound = false;
+    this._labelTimer = null;
   }
 
   init(settings, app) {
@@ -46,7 +47,17 @@ export default class SpellChecker {
         descriptions: items.map(({ id, text }) => ({ id, text }))
       };
 
-      this.panel.showLoading();
+      // Update the IA Tools label while checking
+      const labelEl = document.querySelector('#ia-dropdown-button .ia-label') || document.getElementById('ia-dropdown-button');
+      const restoreText = labelEl ? (labelEl.textContent || 'IA Tools') : 'IA Tools';
+      if (labelEl) labelEl.textContent = 'Checking...';
+      clearTimeout(this._labelTimer);
+      this._labelTimer = setTimeout(() => {
+        const lbl = document.querySelector('#ia-dropdown-button .ia-label') || document.getElementById('ia-dropdown-button');
+        if (lbl && (lbl.textContent === 'Checking...' || lbl.textContent === restoreText)) {
+          lbl.textContent = 'Still checking...';
+        }
+      }, 2000);
       const res = await fetch(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -97,10 +108,18 @@ export default class SpellChecker {
 
       // Render review panel near the first item with issues
       this.panel.render(acceptHandler, rejectHandler);
+
+      // Restore label after finishing
+      if (labelEl) labelEl.textContent = restoreText;
+      clearTimeout(this._labelTimer);
     } catch (e) {
       console.error('Spell check failed', e);
       this.panel.setItems([]);
       this.panel.renderIntro();
+      // Restore label on error
+      const labelEl = document.querySelector('#ia-dropdown-button .ia-label') || document.getElementById('ia-dropdown-button');
+      if (labelEl) labelEl.textContent = 'IA Tools';
+      clearTimeout(this._labelTimer);
     }
   }
 }
