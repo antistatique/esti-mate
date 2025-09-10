@@ -6,7 +6,7 @@ export default class SpellChecker {
     this.app = null;
     this.panel = new CorrectionPanel();
     this.bound = false;
-    this._labelTimer = null;
+    this._labelRestore = 'IA Tools';
   }
 
   init(settings, app) {
@@ -47,29 +47,45 @@ export default class SpellChecker {
         descriptions: items.map(({ id, text }) => ({ id, text }))
       };
 
-      // Update the IA Tools label while checking
+      // Label progress helpers
       const labelEl = document.querySelector('#ia-dropdown-button .ia-label') || document.getElementById('ia-dropdown-button');
-      const restoreText = labelEl ? (labelEl.textContent || 'IA Tools') : 'IA Tools';
-      if (labelEl) labelEl.textContent = 'Checking...';
-      clearTimeout(this._labelTimer);
-      this._labelTimer = setTimeout(() => {
-        const lbl = document.querySelector('#ia-dropdown-button .ia-label') || document.getElementById('ia-dropdown-button');
-        if (lbl && (lbl.textContent === 'Checking...' || lbl.textContent === restoreText)) {
-          lbl.textContent = 'Still checking...';
-        }
-      }, 2000);
-      const res = await fetch(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
+      this._labelRestore = labelEl ? (labelEl.textContent || 'IA Tools') : 'IA Tools';
+      const setLabel = (txt) => { if (labelEl) labelEl.textContent = txt; };
+      // Run per-row requests with limited concurrency for accurate progress
       const byId = new Map(items.map(i => [i.id, i]));
+      const total = items.length;
+      let completed = 0;
+      setLabel(`Checking 0/${total}...`);
 
-      const results = (data.corrections || []).map(c => {
-        const base = byId.get(c.id);
-        return { ...c, index: base ? base.index : -1 };
+      const limit = 3;
+      const results = new Array(total);
+
+      const runOne = async (row, idx) => {
+        try {
+          const res = await fetch(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ descriptions: [{ id: row.id, text: row.text }] })
+          });
+          const data = await res.json();
+          const corr = (data.corrections && data.corrections[0]) || { id: row.id, hasIssues: false, corrected: row.text, changes: [] };
+          results[idx] = { ...corr, index: row.index };
+        } catch (e) {
+          results[idx] = { id: row.id, hasIssues: false, corrected: row.text, changes: [], index: row.index };
+        } finally {
+          completed += 1;
+          setLabel(`Checking ${completed}/${total}...`);
+        }
+      };
+      // Limited concurrency runner
+      let next = 0;
+      const workers = Array(Math.min(limit, total)).fill(0).map(async () => {
+        while (next < total) {
+          const idx = next++;
+          await runOne(items[idx], idx);
+        }
       });
+      await Promise.all(workers);
 
       // Highlight rows
       this.panel.setItems(results);
@@ -79,6 +95,7 @@ export default class SpellChecker {
       if (!results.some(r => r.hasIssues)) {
         this.panel.hide();
         this.panel.showToast('No spelling/grammar issues found', 'success');
+        setLabel(this._labelRestore);
         return;
       }
 
@@ -110,16 +127,14 @@ export default class SpellChecker {
       this.panel.render(acceptHandler, rejectHandler);
 
       // Restore label after finishing
-      if (labelEl) labelEl.textContent = restoreText;
-      clearTimeout(this._labelTimer);
+      setLabel(this._labelRestore);
     } catch (e) {
       console.error('Spell check failed', e);
       this.panel.setItems([]);
       this.panel.renderIntro();
       // Restore label on error
-      const labelEl = document.querySelector('#ia-dropdown-button .ia-label') || document.getElementById('ia-dropdown-button');
-      if (labelEl) labelEl.textContent = 'IA Tools';
-      clearTimeout(this._labelTimer);
+      const labelEl2 = document.querySelector('#ia-dropdown-button .ia-label') || document.getElementById('ia-dropdown-button');
+      if (labelEl2) labelEl2.textContent = this._labelRestore || 'IA Tools';
     }
   }
 }
