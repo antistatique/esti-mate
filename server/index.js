@@ -99,7 +99,12 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Spellcheck server listening on :${PORT}`);
-  console.log(`Config: OPENAI ${process.env.OPENAI_API_KEY ? 'set' : 'missing'}, ALLOWED_ORIGINS ${allowedOrigins.length}`);
-});
+// On Vercel, prefer default export without listening. Keep listener for local dev.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Spellcheck server listening on :${PORT}`);
+    console.log(`Config: OPENAI ${process.env.OPENAI_API_KEY ? 'set' : 'missing'}, ALLOWED_ORIGINS ${allowedOrigins.length}`);
+  });
+}
+
+export default app;
