@@ -7,6 +7,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.mjs",
     "watch": "rollup -c rollup.config.mjs -w",
+    "dev": "node scripts/dev.mjs",
     "start": "web-ext run --source-dir ./dist/",
     "lint": "web-ext lint --source-dir ./dist/",
     "lint:fix": "eslint --fix src/",

@@ -3,12 +3,14 @@
 import Summary from './components/Summary.js';
 import PMTools from './components/PMTools.js';
 import AirtableIntegration from './components/AirtableIntegration.js';
+import SpellChecker from './components/SpellChecker.js';
 
 export default class App {
   constructor() {
     this.summary = new Summary();
     this.pmTools = new PMTools();
     this.airtable = new AirtableIntegration();
+    this.spellChecker = new SpellChecker();
     this.settings = {};
   }
 
@@ -16,6 +18,8 @@ export default class App {
     try {
       await this.loadSettings();
       this.summary.init();
+      // Always bind the spellchecker so the menu event works on any view
+      this.spellChecker.init(this.settings, this);
       
       if (appView === 'edit' || appView === 'new') {
         this.pmTools.init(this.settings, this);
@@ -28,11 +32,15 @@ export default class App {
 
   async loadSettings() {
     return new Promise((resolve) => {
-      browser.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage'], (items) => {
+      // Use chrome or browser API for cross-browser compatibility
+      const browserAPI = typeof chrome !== 'undefined' && chrome.storage ? chrome : browser;
+      
+      browserAPI.storage.local.get(['airtableWorkspace', 'airtableKey', 'pmPercentage', 'serverUrl'], (items) => {
         this.settings = {
           airtableWorkspace: items.airtableWorkspace || '',
           airtableKey: items.airtableKey || '',
-          pmPercentage: items.pmPercentage || 25
+          pmPercentage: items.pmPercentage || 25,
+          serverUrl: items.serverUrl || '',
         };
         resolve();
       });

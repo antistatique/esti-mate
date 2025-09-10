@@ -66,6 +66,7 @@ Extension uses `browser.storage.local` for:
 - `airtableWorkspace`: Airtable workspace identifier
 - `airtableKey`: Airtable API key
 - `pmPercentage`: Project management percentage (default: 25%)
+ - `serverUrl`: Local proxy server base URL for spellcheck (e.g., http://localhost:3000)
 
 ## Key Files to Understand
 
@@ -81,6 +82,10 @@ Extension uses `browser.storage.local` for:
 - Components are designed to be reinitialized when Harvest UI changes
 - Event listeners are properly managed to avoid memory leaks
 - Uses browser polyfill for cross-browser compatibility
+
+## Future Development
+
+- **Spelling Check Feature**: See `./todos/check-speller.md` for detailed implementation plan and the `server/` proxy implementation. Language is auto-detected by the AI; no per-user language setting is required.
 
 ## Publication & Release Automation
 

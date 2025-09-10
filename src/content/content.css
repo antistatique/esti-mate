@@ -1,0 +1,128 @@
+.esti-spell-panel {
+  border: 1px solid #f0a;
+  padding: 10px;
+  background: #fff7fb;
+}
+
+.esti-spell-item {
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.esti-spell-actions {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+}
+
+.esti-accept {
+  background-color: #16a34a !important; /* green */
+  border-color: #16a34a !important;
+  color: #fff !important;
+}
+.esti-accept:hover { background-color: #15803d !important; border-color: #15803d !important; }
+.esti-accept:focus { box-shadow: 0 0 0 2px #e6f8ec, 0 0 0 4px #16a34a; }
+
+.esti-reject {
+  background-color: #dc2626 !important; /* red */
+  border-color: #dc2626 !important;
+  color: #fff !important;
+}
+.esti-reject:hover { background-color: #b91c1c !important; border-color: #b91c1c !important; }
+.esti-reject:focus { box-shadow: 0 0 0 2px #fdecec, 0 0 0 4px #dc2626; }
+
+.esti-spell-issue-row {
+  /* background-color: rgba(255, 111, 163, 0.12); */
+  box-shadow: inset 3px 0 0 #ff6fa3;
+  transition: background-color .2s ease;
+}
+.esti-spell-issue-row:hover,
+.esti-spell-issue-row:focus-within {
+  background-color: rgba(255, 111, 163, 0.16);
+}
+.esti-spell-issue-row td {
+  background-color: inherit;
+}
+
+.esti-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.esti-diff {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 6px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.esti-diff b {
+  font-weight: 800;
+  background: #ffe5f2; /* light magenta highlight */
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.esti-diff del {
+  background: #ffecec; /* light red for deletions */
+  color: #a4003a;
+  border-radius: 2px;
+  padding: 0 1px;
+  text-decoration: line-through;
+}
+
+#todo-wrapper {
+  min-width: 320px;
+}
+
+#esti-spell-floating-panel {
+  position: absolute !important;
+  width: 430px;
+  max-height: 70vh;
+  overflow: auto;
+  z-index: 999999;
+}
+
+/* Reserve stable space for the per-row template select we inject */
+.airtable-template {
+  display: block;
+  margin-bottom: 8px;
+  min-height: 30px; /* reserve height to reduce layout jump */
+}
+
+.esti-spell-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.esti-spell-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.esti-spell-nav .pds-button {
+  padding: 2px 8px;
+}
+
+/* Toasts */
+.esti-toast {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000000;
+  background: #111827;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  font-size: 14px;
+  line-height: 1.3;
+  opacity: 0.98;
+}
+.esti-toast--success { background: #16a34a; }
+.esti-toast--info { background: #2563eb; }
+.esti-toast--error { background: #dc2626; }

@@ -49,9 +49,18 @@ export default [
           { src: 'manifest.json', dest: 'dist' },
           { src: 'src/options/index.html', dest: 'dist', rename: 'options.html' },
           { src: 'src/options/options.css', dest: 'dist', rename: 'options.css' },
+          { src: 'src/content/content.css', dest: 'dist', rename: 'content.css' },
           { src: 'assets/*', dest: 'dist/assets' },
         ],
-        hook: 'buildStart',  // Run at the start of the build process
+        // Copy after each rebuild so CSS/assets are always fresh in dist
+        hook: 'writeBundle',
+        watch: [
+          'manifest.json',
+          'src/options/index.html',
+          'src/options/options.css',
+          'src/content/content.css',
+          'assets/**'
+        ],
       }),
     ],
   }
