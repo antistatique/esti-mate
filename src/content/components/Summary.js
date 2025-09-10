@@ -116,7 +116,7 @@ export default class Summary {
     table.style.borderSpacing = '0';
     table.style.borderCollapse = 'collapse';
     table.style.marginTop = '10px';
-    table.style.width = '600px';
+    table.style.width = '760px';
 
     const thead = document.createElement('thead');
     thead.className = 'client-doc-items-header desktop-only';
@@ -143,7 +143,7 @@ export default class Summary {
         </td>
         <td class="item-type desktop-only" style="cursor: pointer;" title="Click to select/deselect">${key}</td>
         <td class="item-qty desktop-only">${data.qty}</td>
-        <td class="item-amount">${data.amount.toFixed(2)}</td>
+        <td class="item-amount">${this.formatAmount(data.amount)}</td>
       `;
       tbody.appendChild(row);
     });
@@ -173,7 +173,7 @@ export default class Summary {
         <td class="item-select desktop-only"></td>
         <td class="item-type desktop-only">Totaux de l'estimation</td>
         <td class="item-qty desktop-only">${totalQty}</td>
-        <td class="item-amount">${totalAmount.toFixed(2)}</td>
+        <td class="item-amount">${this.formatAmount(totalAmount)}</td>
       </tr>
       ${selectedRowHtml}
     `;
@@ -274,7 +274,7 @@ export default class Summary {
             <td class="item-select desktop-only"></td>
             <td class="item-type desktop-only" style="font-style: italic;">Sélection</td>
             <td class="item-qty desktop-only" style="font-weight: bold;">${selectedTotals.qty}</td>
-            <td class="item-amount" style="font-weight: bold;">${selectedTotals.amount.toFixed(2)}</td>
+            <td class="item-amount" style="font-weight: bold;">${this.formatAmount(selectedTotals.amount)}</td>
           </tr>
         `;
       }
@@ -284,7 +284,7 @@ export default class Summary {
           <td class="item-select desktop-only"></td>
           <td class="item-type desktop-only">Totaux de l'estimation</td>
           <td class="item-qty desktop-only">${totalQty}</td>
-          <td class="item-amount">${totalAmount.toFixed(2)}</td>
+          <td class="item-amount">${this.formatAmount(totalAmount)}</td>
         </tr>
         ${selectedRowHtml}
       `;
@@ -293,5 +293,14 @@ export default class Summary {
 
   extractFloatAmountFromText(amountAsText) {
     return parseFloat(amountAsText.replaceAll(/[^0-9.]/g, ''));
+  }
+
+  formatAmount(value) {
+    try {
+      const n = Number(value) || 0;
+      return new Intl.NumberFormat('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    } catch (_) {
+      return (Number(value) || 0).toFixed(2);
+    }
   }
 }
