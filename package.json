@@ -1,6 +1,6 @@
 {
   "name": "esti-mate",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "Your Harvest estimate's best friend",
   "main": "src/index.js",
   "type": "module",
@@ -15,8 +15,8 @@
     "version:patch": "npm version patch --no-git-tag-version && node scripts/sync-manifest-version.cjs",
     "version:minor": "npm version minor --no-git-tag-version && node scripts/sync-manifest-version.cjs",
     "version:major": "npm version major --no-git-tag-version && node scripts/sync-manifest-version.cjs",
-    "prepare-release": "npm run version:patch && npm run build && mkdir -p releases && cd dist && zip -r ../releases/esti-mate-v$(node -p \"require('../package.json').version\").zip . && cd .. && npm run source-code && echo \"✅ Release package created: releases/esti-mate-v$(node -p \"require('./package.json').version\").zip\" && echo \"✅ Source code package created: releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip\"",
-    "source-code": "mkdir -p releases && zip -r releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip . -x 'node_modules/*' 'dist/*' 'releases/*' '*.zip' '.git/*' '.idea/*' 'doc/*' '.claude/*' '.codex/*' 'server/*' '.env.*' 'CLAUDE.md' '.DS_Store' && echo '✅ Source code package ready for Firefox submission'"
+    "prepare-release": "npm run build && mkdir -p releases && cd dist && zip -r ../releases/esti-mate-v$(node -p \"require('../package.json').version\").zip . && cd .. && npm run source-code && echo \"✅ Release package created: releases/esti-mate-v$(node -p \"require('./package.json').version\").zip\" && echo \"✅ Source code package created: releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip\"",
+    "source-code": "mkdir -p releases && zip -r releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip . -x 'node_modules/*' 'dist/*' 'releases/*' '*.zip' '.git/*' '.idea/*' 'doc/*' 'todos/*' '.claude/*' '.codex/*' 'server/*' '.env.*' '.*' 'CLAUDE.md' '.DS_Store' && echo '✅ Source code package ready for Firefox submission'"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^26.0.1",
