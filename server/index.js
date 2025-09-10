@@ -61,10 +61,14 @@ app.use((req, res, next) => {
     return res.status(403).send('Not allowed by CORS');
   }
   res.setHeader('Access-Control-Allow-Origin', origin);
-  res.setHeader('Vary', 'Origin');
+  res.setHeader('Vary', 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
-  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  if (req.method === 'OPTIONS') {
+    // Cache preflight to reduce OPTIONS chatter
+    res.setHeader('Access-Control-Max-Age', '600'); // 10 minutes (browsers cap if needed)
+    return res.sendStatus(204);
+  }
   next();
 });
 
