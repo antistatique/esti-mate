@@ -33,7 +33,16 @@
 .esti-reject:focus { box-shadow: 0 0 0 2px #fdecec, 0 0 0 4px #dc2626; }
 
 .esti-spell-issue-row {
-  outline: 2px solid #ff6fa3 !important;
+  background-color: rgba(255, 111, 163, 0.12);
+  box-shadow: inset 3px 0 0 #ff6fa3;
+  transition: background-color .2s ease;
+}
+.esti-spell-issue-row:hover,
+.esti-spell-issue-row:focus-within {
+  background-color: rgba(255, 111, 163, 0.16);
+}
+.esti-spell-issue-row td {
+  background-color: inherit;
 }
 
 .esti-mono {
