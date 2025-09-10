@@ -4,6 +4,9 @@ export default class CorrectionPanel {
     this.items = [];
     this.currentIndex = -1;
     this._repositionHandler = null;
+    this._keyHandler = null;
+    this._lastAccept = null;
+    this._lastReject = null;
   }
 
   init() {
@@ -77,15 +80,15 @@ export default class CorrectionPanel {
         <div class="esti-spell-header">
           <h4 style="margin:0;">Row #${item.index + 1} <span class="pds-text-sm" style="opacity:.7">(${posInfo})</span></h4>
           <div class="esti-spell-nav">
-            <button class="pds-button pds-button-secondary pds-button-sm" data-nav="prev">Prev</button>
-            <button class="pds-button pds-button-secondary pds-button-sm" data-nav="next">Next</button>
+            <button class="pds-button pds-button-secondary pds-button-sm" data-nav="prev" aria-keyshortcuts="K ArrowLeft" title="Prev (K / ←)">Prev (K)</button>
+            <button class="pds-button pds-button-secondary pds-button-sm" data-nav="next" aria-keyshortcuts="J ArrowRight" title="Next (J / →)">Next (J)</button>
           </div>
         </div>
         <div class="esti-spell-item">
           <div class="esti-diff esti-mono" id="esti-corrected-view"></div>
           <div class="esti-spell-actions">
-            <button class="pds-button pds-button-sm esti-accept" data-action="accept" data-id="${item.id}">Accept</button>
-            <button class="pds-button pds-button-sm esti-reject" data-action="reject" data-id="${item.id}">Reject</button>
+            <button class="pds-button pds-button-sm esti-accept" data-action="accept" data-id="${item.id}" aria-keyshortcuts="A Enter" title="Accept (A / Enter)">Accept (A)</button>
+            <button class="pds-button pds-button-sm esti-reject" data-action="reject" data-id="${item.id}" aria-keyshortcuts="R Backspace" title="Reject (R / ⌫)">Reject (R)</button>
           </div>
         </div>
       </div>
@@ -97,6 +100,10 @@ export default class CorrectionPanel {
     this.container.querySelector('[data-nav="prev"]').addEventListener('click', () => this.prev(() => this.renderCurrent(onAccept, onReject)));
     this.container.querySelector('[data-nav="next"]').addEventListener('click', () => this.next(() => this.renderCurrent(onAccept, onReject)));
 
+    // Store handlers for keyboard shortcuts
+    this._lastAccept = (id) => onAccept?.(id);
+    this._lastReject = (id) => onReject?.(id);
+
     // Scroll to and position near the associated textarea
     const anchor = this.findRowByIndex(item.index)?.querySelector('textarea');
     if (anchor) {
@@ -105,8 +112,6 @@ export default class CorrectionPanel {
       } catch (_) {
         anchor.scrollIntoView(true);
       }
-      // Focus without scrolling again
-      try { anchor.focus({ preventScroll: true }); } catch (_) {}
       // Position immediately, then settle after the scroll animation
       this.positionNear(anchor);
       setTimeout(() => this.positionNear(anchor), 200);
@@ -262,11 +267,54 @@ export default class CorrectionPanel {
   }
 
   show() {
-    if (this.container) this.container.style.display = 'block';
+    if (!this.container) return;
+    this.container.style.display = 'block';
+    this.addKeyListeners();
   }
 
   hide() {
-    if (this.container) this.container.style.display = 'none';
+    if (!this.container) return;
+    this.container.style.display = 'none';
+    this.removeKeyListeners();
+  }
+
+  addKeyListeners() {
+    if (this._keyHandler) return;
+    this._keyHandler = (e) => {
+      const isTextInput = (el) => el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.isContentEditable);
+      const active = document.activeElement;
+      if (isTextInput(active) && !['Escape'].includes(e.key)) return;
+      if (e.key === 'j' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        this.next(() => this.renderCurrent(this._lastAccept, this._lastReject));
+      } else if (e.key === 'k' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        this.prev(() => this.renderCurrent(this._lastAccept, this._lastReject));
+      } else if (e.key === 'a' || e.key === 'Enter') {
+        e.preventDefault();
+        const id = this.items[this.currentIndex]?.id;
+        if (id) this._lastAccept && this._lastAccept(id);
+      } else if (e.key === 'r' || e.key === 'Backspace') {
+        e.preventDefault();
+        const id = this.items[this.currentIndex]?.id;
+        if (id) this._lastReject && this._lastReject(id);
+      } else if (e.key === 'f') {
+        e.preventDefault();
+        const item = this.items[this.currentIndex];
+        const ta = item ? this.findRowByIndex(item.index)?.querySelector('textarea') : null;
+        if (ta) try { ta.focus({ preventScroll: true }); } catch(_) { ta.focus(); }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        this.hide();
+      }
+    };
+    document.addEventListener('keydown', this._keyHandler, true);
+  }
+
+  removeKeyListeners() {
+    if (!this._keyHandler) return;
+    document.removeEventListener('keydown', this._keyHandler, true);
+    this._keyHandler = null;
   }
 
   showToast(message, type = 'success', timeout = 2500) {
