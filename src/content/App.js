@@ -40,7 +40,7 @@ export default class App {
           airtableWorkspace: items.airtableWorkspace || '',
           airtableKey: items.airtableKey || '',
           pmPercentage: items.pmPercentage || 25,
-          serverUrl: items.serverUrl || '',
+          serverUrl: items.serverUrl || 'https://esti-mate.antistatique.io',
         };
         resolve();
       });

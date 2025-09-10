@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('airtable-workspace').value = items.airtableWorkspace || '';
     document.getElementById('airtable-key').value = items.airtableKey || '';
     document.getElementById('pm-percentage').value = items.pmPercentage || 25;
-    document.getElementById('server-url').value = items.serverUrl || '';
+    document.getElementById('server-url').value = items.serverUrl || 'https://esti-mate.antistatique.io';
   });
 
   // Save options
