@@ -82,6 +82,7 @@ export default class CorrectionPanel {
           <div class="esti-spell-nav">
             <button class="pds-button pds-button-secondary pds-button-sm" data-nav="prev" aria-keyshortcuts="K ArrowLeft" title="Prev (K / ←)">Prev (K)</button>
             <button class="pds-button pds-button-secondary pds-button-sm" data-nav="next" aria-keyshortcuts="J ArrowRight" title="Next (J / →)">Next (J)</button>
+            <button class="pds-button pds-button-secondary pds-button-sm" data-nav="close" aria-keyshortcuts="Escape" title="Close (Esc)" style="margin-left:8px;">✕</button>
           </div>
         </div>
         <div class="esti-spell-item">
@@ -99,6 +100,8 @@ export default class CorrectionPanel {
     this.container.querySelector('[data-action="reject"]').addEventListener('click', () => onReject?.(item.id));
     this.container.querySelector('[data-nav="prev"]').addEventListener('click', () => this.prev(() => this.renderCurrent(onAccept, onReject)));
     this.container.querySelector('[data-nav="next"]').addEventListener('click', () => this.next(() => this.renderCurrent(onAccept, onReject)));
+    const closeBtn = this.container.querySelector('[data-nav="close"]');
+    if (closeBtn) closeBtn.addEventListener('click', () => this.hide());
 
     // Store handlers for keyboard shortcuts
     this._lastAccept = (id) => onAccept?.(id);
