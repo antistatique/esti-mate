@@ -31,11 +31,12 @@ ready(() => {
     return false;
   }
 
-  // Add spell check button to header
-  const headerH1 = d.querySelector('h1');
-  if (headerH1) {
-    const headerContainer = headerH1.parentElement;
-    if (headerContainer) {
+  // Add spell check dropdown ONLY in edit/new modes
+  if (appView === 'edit' || appView === 'new') {
+    const headerH1 = d.querySelector('h1');
+    if (headerH1) {
+      const headerContainer = headerH1.parentElement;
+      if (headerContainer) {
       // Create IA dropdown container
       const iaDropdownContainer = d.createElement('div');
       iaDropdownContainer.className = 'pds-menu-container';
@@ -57,7 +58,7 @@ ready(() => {
       iaDropdownButton.setAttribute('aria-controls', 'ia-dropdown-menu');
       
       // Add IA text and chevron icon (label wrapped for easy runtime updates)
-      iaDropdownButton.innerHTML = `<span class="ia-label">IA Tools</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-label="Down chevron icon" aria-hidden="true"><polyline points="5 9 12 17 19 9"></polyline></svg>`;
+      iaDropdownButton.innerHTML = `<span class="ia-label">✨ IA Tools</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-label="Down chevron icon" aria-hidden="true"><polyline points="5 9 12 17 19 9"></polyline></svg>`;
       
       // Create dropdown menu structure
       const menuBackdrop = d.createElement('div');
@@ -125,6 +126,7 @@ ready(() => {
       // Make header container relative positioned
       headerContainer.style.position = 'relative';
       headerContainer.appendChild(iaDropdownContainer);
+      }
     }
   }
 
