@@ -63,7 +63,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Vary', 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-API-Key');
   if (req.method === 'OPTIONS') {
     // Cache preflight to reduce OPTIONS chatter
     res.setHeader('Access-Control-Max-Age', '600'); // 10 minutes (browsers cap if needed)
@@ -78,10 +78,20 @@ app.get('/config', (_req, res) => {
     port: PORT,
     openai: !!process.env.OPENAI_API_KEY,
     allowedOriginsCount: allowedOrigins.length,
+    secretRequired: !!(process.env.ESTI_SECRET && process.env.ESTI_SECRET.trim()),
   });
 });
 // Import routes after env is loaded so they see OPENAI_API_KEY
 const spellingRouter = (await import('./routes/spelling.js')).default;
+// Simple shared-secret protection: if ESTI_SECRET is set, require it
+const secrets = (process.env.ESTI_SECRET || '').split(',').map(s => s.trim()).filter(Boolean);
+function requireSecret(req, res, next) {
+  if (!secrets.length) return next(); // disabled in dev
+  const provided = req.header('x-api-key');
+  if (provided && secrets.includes(provided)) return next();
+  return res.status(401).json({ error: 'unauthorized' });
+}
+app.use('/check-spelling', requireSecret);
 app.use('/check-spelling', spellingRouter);
 
 app.use((err, _req, res, _next) => {

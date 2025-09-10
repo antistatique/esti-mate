@@ -72,7 +72,7 @@ export default class SpellChecker {
         const body = JSON.stringify({ descriptions: batch.map(b => ({ id: b.row.id, text: b.row.text })) });
         try {
           const res = await fetchWithTimeout(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': this.settings.airtableKey || '' }, body
           });
           const data = await res.json();
           const list = data.corrections || [];
@@ -87,7 +87,7 @@ export default class SpellChecker {
           for (const b of batch) {
             try {
               const r = await fetchWithTimeout(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ descriptions: [{ id: b.row.id, text: b.row.text }] })
+                method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': this.settings.airtableKey || '' }, body: JSON.stringify({ descriptions: [{ id: b.row.id, text: b.row.text }] })
               }, 20000);
               const data = await r.json();
               const corr = (data.corrections && data.corrections[0]) || { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [] };
