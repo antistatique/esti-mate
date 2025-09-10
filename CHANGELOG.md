@@ -43,3 +43,29 @@
 
 *1.1.1* (2018-07-02)
   - 🔨 refactor PM tools and total setup approach (d306ac6)
+*3.0.0-beta* (2025-09-10)
+ - ✨ AI Spell Check (beta)
+   - New “✨ IA Tools → Spell check” in edit/new views only
+   - Floating review panel with per-row Accept/Reject, Next/Prev, close (✕)
+   - Client-side word-level diff: bold additions, strike deletions; preserves newlines
+   - Keyboard shortcuts: J/K (next/prev), A/Enter (accept), R/Backspace (reject), F (focus), Esc (close)
+   - Auto-scroll to the row and smart panel positioning near the textarea
+   - Hidden by default; toast when no issues; panel hides when all resolved
+   - Progress feedback in the button label: “Checking X/N…”
+ - 🖥️ Server proxy (./server)
+   - POST /check-spelling with OpenAI support and FR/EN local fallback
+   - Strict JSON output (no original echo) and runtime logging (mode, time, tokens)
+   - CORS with preflight cache (Access-Control-Max-Age), domain wildcards
+   - Simple auth via X-API-Key header (reuses Airtable key); enable by setting ESTI_SECRET in server/.env
+   - Prompt preserves lightweight formatting (*text*, _text_) and em-dash bullets (—); forbids AI change markers
+ - ⚙️ Developer experience
+   - npm run dev (Rollup watch + web-ext run) with live reload
+   - Build copies content.css on writeBundle; options/settings updates
+   - Request batching (2-by-2) with concurrency and timeouts for faster checks
+ - 🧰 UI/Options
+   - IA Tools button prefixed with ✨; no analytics attrs on extension UI
+   - Removed language setting (auto-detected by AI); added serverUrl option
+ - 📊 Summary improvements
+   - Swiss number formatting (e.g., 26’250.00)
+   - Wider table (760px) to reduce wraps
+   - Click-to-copy on quantities and amounts with subtle flash

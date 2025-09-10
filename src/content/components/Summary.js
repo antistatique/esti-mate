@@ -116,7 +116,7 @@ export default class Summary {
     table.style.borderSpacing = '0';
     table.style.borderCollapse = 'collapse';
     table.style.marginTop = '10px';
-    table.style.width = '600px';
+    table.style.width = '760px';
 
     const thead = document.createElement('thead');
     thead.className = 'client-doc-items-header desktop-only';
@@ -142,8 +142,8 @@ export default class Summary {
           <input type="checkbox" class="summary-item-checkbox" data-item-type="${key}" ${isSelected ? 'checked' : ''}>
         </td>
         <td class="item-type desktop-only" style="cursor: pointer;" title="Click to select/deselect">${key}</td>
-        <td class="item-qty desktop-only">${data.qty}</td>
-        <td class="item-amount">${data.amount.toFixed(2)}</td>
+        <td class="item-qty desktop-only" style="cursor: copy;" title="Click to copy">${data.qty}</td>
+        <td class="item-amount" style="cursor: copy;" title="Click to copy">${this.formatAmount(data.amount)}</td>
       `;
       tbody.appendChild(row);
     });
@@ -173,7 +173,7 @@ export default class Summary {
         <td class="item-select desktop-only"></td>
         <td class="item-type desktop-only">Totaux de l'estimation</td>
         <td class="item-qty desktop-only">${totalQty}</td>
-        <td class="item-amount">${totalAmount.toFixed(2)}</td>
+        <td class="item-amount">${this.formatAmount(totalAmount)}</td>
       </tr>
       ${selectedRowHtml}
     `;
@@ -240,7 +240,7 @@ export default class Summary {
       }
     });
     
-    // Add click event listener for item type names
+    // Add click event listener for item type names and copy on number cells
     this.summaryWrapper.addEventListener('click', (e) => {
       if (e.target.matches('.item-type')) {
         const row = e.target.closest('tr');
@@ -249,6 +249,10 @@ export default class Summary {
           checkbox.checked = !checkbox.checked;
           checkbox.dispatchEvent(new Event('change', { bubbles: true }));
         }
+      } else if (e.target.matches('.item-qty, .item-amount')) {
+        const text = e.target.textContent.trim();
+        this.copyToClipboard(text);
+        this.flashCopy(e.target);
       }
     });
     
@@ -267,31 +271,67 @@ export default class Summary {
     // Find the tfoot element and update only the selection row
     const tfoot = this.summaryWrapper.querySelector('tfoot');
     if (tfoot) {
-      let selectedRowHtml = '';
-      if (selectedTotals.qty > 0) {
-        selectedRowHtml = `
-          <tr class="selected-total" style="background-color: #f0f8ff; border: 2px solid #007cba;">
-            <td class="item-select desktop-only"></td>
-            <td class="item-type desktop-only" style="font-style: italic;">Sélection</td>
-            <td class="item-qty desktop-only" style="font-weight: bold;">${selectedTotals.qty}</td>
-            <td class="item-amount" style="font-weight: bold;">${selectedTotals.amount.toFixed(2)}</td>
-          </tr>
-        `;
-      }
-      
-      tfoot.innerHTML = `
-        <tr class="total">
+    let selectedRowHtml = '';
+    if (selectedTotals.qty > 0) {
+      selectedRowHtml = `
+        <tr class="selected-total" style="background-color: #f0f8ff; border: 2px solid #007cba;">
           <td class="item-select desktop-only"></td>
-          <td class="item-type desktop-only">Totaux de l'estimation</td>
-          <td class="item-qty desktop-only">${totalQty}</td>
-          <td class="item-amount">${totalAmount.toFixed(2)}</td>
+          <td class="item-type desktop-only" style="font-style: italic;">Sélection</td>
+          <td class="item-qty desktop-only" style="font-weight: bold; cursor: copy;" title="Click to copy">${selectedTotals.qty}</td>
+          <td class="item-amount" style="font-weight: bold; cursor: copy;" title="Click to copy">${this.formatAmount(selectedTotals.amount)}</td>
         </tr>
-        ${selectedRowHtml}
       `;
+    }
+      
+    tfoot.innerHTML = `
+      <tr class="total">
+        <td class="item-select desktop-only"></td>
+        <td class="item-type desktop-only">Totaux de l'estimation</td>
+        <td class="item-qty desktop-only" style="cursor: copy;" title="Click to copy">${totalQty}</td>
+        <td class="item-amount" style="cursor: copy;" title="Click to copy">${this.formatAmount(totalAmount)}</td>
+      </tr>
+      ${selectedRowHtml}
+    `;
     }
   }
 
   extractFloatAmountFromText(amountAsText) {
     return parseFloat(amountAsText.replaceAll(/[^0-9.]/g, ''));
+  }
+
+  formatAmount(value) {
+    try {
+      const n = Number(value) || 0;
+      return new Intl.NumberFormat('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    } catch (_) {
+      return (Number(value) || 0).toFixed(2);
+    }
+  }
+
+  async copyToClipboard(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    } catch (_) {
+      // ignore copy failures silently
+    }
+  }
+
+  flashCopy(el) {
+    const original = el.style.backgroundColor;
+    el.style.transition = 'background-color .2s ease';
+    el.style.backgroundColor = '#fff8e1';
+    setTimeout(() => { el.style.backgroundColor = original || ''; }, 250);
   }
 }
