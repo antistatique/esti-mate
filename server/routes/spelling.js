@@ -39,7 +39,6 @@ function localSpellcheck(text) {
   }
   return {
     hasIssues: changes.length > 0 && corrected !== text,
-    original: text,
     corrected,
     changes
   };
@@ -68,7 +67,7 @@ function normalizeCorrections(descriptions, payload) {
     // Best-effort pass-through of changes array if provided
     const changes = Array.isArray(it?.changes) ? it.changes : [];
 
-    return { id, hasIssues, original, corrected, changes };
+    return { id, hasIssues, corrected, changes };
   });
 }
 
@@ -98,7 +97,7 @@ router.post('/', async (req, res) => {
     const system = [
       'You are a precise spelling/grammar corrector. Auto-detect English/French.',
       'Respond with a JSON object of the form:',
-      '{"corrections": [{"id": string, "hasIssues": boolean, "original": string, "corrected": string, "changes": [{"type":"spelling|grammar","from":string,"to":string}]}]}',
+      '{"corrections": [{"id": string, "hasIssues": boolean, "corrected": string, "changes": [{"type":"spelling|grammar","from":string,"to":string}]}]}',
       'Rules:',
       '- Output ONLY JSON (no explanations).',
       '- Preserve line breaks and spacing.',
