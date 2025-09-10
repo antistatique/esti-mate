@@ -60,29 +60,76 @@ export default class SpellChecker {
       const limit = 3;
       const results = new Array(total);
 
-      const runOne = async (row, idx) => {
+      const fetchWithTimeout = async (url, options, timeoutMs = 25000) => {
+        const ctrl = new AbortController();
+        const id = setTimeout(() => ctrl.abort(), timeoutMs);
         try {
-          const res = await fetch(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ descriptions: [{ id: row.id, text: row.text }] })
+          return await fetch(url, { ...options, signal: ctrl.signal });
+        } finally { clearTimeout(id); }
+      };
+
+      const runBatch = async (batch) => {
+        const body = JSON.stringify({ descriptions: batch.map(b => ({ id: b.row.id, text: b.row.text })) });
+        try {
+          const res = await fetchWithTimeout(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body
           });
           const data = await res.json();
-          const corr = (data.corrections && data.corrections[0]) || { id: row.id, hasIssues: false, corrected: row.text, changes: [] };
-          results[idx] = { ...corr, index: row.index };
-        } catch (e) {
-          results[idx] = { id: row.id, hasIssues: false, corrected: row.text, changes: [], index: row.index };
-        } finally {
-          completed += 1;
+          const list = data.corrections || [];
+          batch.forEach((b, i) => {
+            const corr = list[i] || { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [] };
+            results[b.idx] = { ...corr, index: b.row.index };
+          });
+          completed += batch.length;
           setLabel(`Checking ${completed}/${total}...`);
+        } catch (e) {
+          // fallback to singles
+          for (const b of batch) {
+            try {
+              const r = await fetchWithTimeout(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ descriptions: [{ id: b.row.id, text: b.row.text }] })
+              }, 20000);
+              const data = await r.json();
+              const corr = (data.corrections && data.corrections[0]) || { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [] };
+              results[b.idx] = { ...corr, index: b.row.index };
+            } catch (_) {
+              results[b.idx] = { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [], index: b.row.index };
+            } finally {
+              completed += 1;
+              setLabel(`Checking ${completed}/${total}...`);
+            }
+          }
         }
       };
-      // Limited concurrency runner
-      let next = 0;
-      const workers = Array(Math.min(limit, total)).fill(0).map(async () => {
-        while (next < total) {
-          const idx = next++;
-          await runOne(items[idx], idx);
+
+      // Build batches of up to 2 items with size guard
+      const MAX_BATCH_CHARS = 2000;
+      const MAX_ROW_CHARS = 1400;
+      const batches = [];
+      for (let i = 0; i < total;) {
+        const first = items[i];
+        const len1 = (first.text || '').length;
+        if (i === total - 1 || len1 > MAX_ROW_CHARS) {
+          batches.push([{ row: first, idx: i }]);
+          i += 1;
+          continue;
+        }
+        const second = items[i + 1];
+        const len2 = (second.text || '').length;
+        if (len1 + len2 <= MAX_BATCH_CHARS) {
+          batches.push([{ row: first, idx: i }, { row: second, idx: i + 1 }]);
+          i += 2;
+        } else {
+          batches.push([{ row: first, idx: i }]);
+          i += 1;
+        }
+      }
+
+      let nextBatch = 0;
+      const workers = Array(Math.min(limit, batches.length)).fill(0).map(async () => {
+        while (nextBatch < batches.length) {
+          const idx = nextBatch++;
+          await runBatch(batches[idx]);
         }
       });
       await Promise.all(workers);
