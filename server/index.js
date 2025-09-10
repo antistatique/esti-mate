@@ -72,7 +72,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/health', (_req, res) => res.json({ ok: true }));
+// Simple healthcheck at root
+app.get('/', (_req, res) => res.json({ ok: true }));
 app.get('/config', (_req, res) => {
   res.json({
     port: PORT,
