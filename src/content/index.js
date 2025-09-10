@@ -53,7 +53,6 @@ ready(() => {
       iaDropdownButton.setAttribute('aria-haspopup', 'true');
       iaDropdownButton.setAttribute('aria-expanded', 'false');
       iaDropdownButton.setAttribute('aria-label', 'IA actions');
-      iaDropdownButton.setAttribute('data-analytics-element-id', 'ia-actions-menu');
       iaDropdownButton.setAttribute('type', 'button');
       iaDropdownButton.setAttribute('aria-controls', 'ia-dropdown-menu');
       
@@ -80,7 +79,7 @@ ready(() => {
       const spellCheckLink = d.createElement('a');
       spellCheckLink.setAttribute('role', 'menuitem');
       spellCheckLink.setAttribute('tabindex', '-1');
-      spellCheckLink.setAttribute('data-analytics-element-id', 'ia-spell-check');
+      // No analytics attributes on extension UI
       spellCheckLink.className = 'pds-menu-item';
       spellCheckLink.textContent = 'Spell check';
       spellCheckLink.href = '#';
