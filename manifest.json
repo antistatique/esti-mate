@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Esti'mate",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Your Harvest estimate's best friend",
   "author": "Antistatique",
   "homepage_url": "https://github.com/antistatique/esti-mate/",
