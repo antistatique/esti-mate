@@ -1,3 +1,7 @@
+*3.0.2* (2025-11-09)
+ - 🔧 Simplified ESLint toolchain to the native @eslint/js config so `npm install` no longer fails on peer dependency issues.
+ - 📦 Reworked `npm run source-code` to use `git archive`, producing a clean, reviewer-friendly source zip even with a dirty working tree (excludes AGENTS.md and other internal folders).
+
 *3.0.1* (2025-09-18)
  - ✨ Click-to-copy on quantities and amounts with subtle flash
 
