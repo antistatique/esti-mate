@@ -1,7 +1,9 @@
+*Unreleased*
+ - 🧮 Estimate totals footer now sticks to the viewport, showing only the grand total while scrolled so you never lose sight of the final amount.
+
 *3.0.3* (2025-11-09)
  - 📦 Release pipeline cleanup: removed the dummy Rollup bundle and legacy `lib/` polyfills so dist/source zips match what Firefox reviews expect.
  - 🛡️ Manifest now declares `"data_collection_permissions": { "required": ["none"] }` to satisfy Firefox’s new consent requirement (extension still collects no data).
- - 🧮 Estimate totals footer now sticks to the viewport, showing only the grand total while scrolled so you never lose sight of the final amount.
 
 *3.0.2* (2025-11-09)
  - 🔧 Simplified ESLint toolchain to the native @eslint/js config so `npm install` no longer fails on peer dependency issues.
