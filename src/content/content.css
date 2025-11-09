@@ -126,3 +126,35 @@
 .esti-toast--success { background: #16a34a; }
 .esti-toast--info { background: #2563eb; }
 .esti-toast--error { background: #dc2626; }
+
+/* Sticky totals on Harvest estimate table */
+#document-edit-line-items {
+  position: relative;
+}
+
+#document-edit-line-items thead,
+#document-edit-line-items tfoot {
+  display: table;
+  width: 100%;
+}
+
+#document-edit-line-items tbody {
+  display: block;
+}
+
+#document-edit-line-items tfoot {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 5;
+  transition: box-shadow 120ms ease, background-color 120ms;
+}
+
+#document-edit-line-items tfoot.is-stuck {
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+  background-color: #fffbe6;  /* your yellow test color */
+}
+
+#document-edit-line-items tfoot.is-stuck tr:not(:first-child) {
+  display: none;
+}
