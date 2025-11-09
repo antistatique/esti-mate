@@ -1,3 +1,7 @@
+*3.0.3* (2025-11-09)
+ - 📦 Release pipeline cleanup: removed the dummy Rollup bundle and legacy `lib/` polyfills so dist/source zips match what Firefox reviews expect.
+ - 🛡️ Manifest now declares `"data_collection_permissions": { "required": ["none"] }` to satisfy Firefox’s new consent requirement (extension still collects no data).
+
 *3.0.2* (2025-11-09)
  - 🔧 Simplified ESLint toolchain to the native @eslint/js config so `npm install` no longer fails on peer dependency issues.
  - 📦 Reworked `npm run source-code` to use `git archive`, producing a clean, reviewer-friendly source zip even with a dirty working tree (excludes AGENTS.md and other internal folders).
