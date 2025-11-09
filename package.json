@@ -19,11 +19,10 @@
     "source-code": "mkdir -p releases && zip -r releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip . -x 'node_modules/*' 'dist/*' 'releases/*' '*.zip' '.git/*' '.idea/*' 'doc/*' 'todos/*' '.claude/*' '.codex/*' 'server/*' '.env.*' '.*' 'CLAUDE.md' '.DS_Store' && echo '✅ Source code package ready for Firefox submission'"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9.0",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "eslint": "^9.9.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "*",
     "globals": "^15.9.0",
     "rollup": "^4.22.4",
     "rollup-plugin-copy": "^3.5.0"
