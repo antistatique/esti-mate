@@ -7,7 +7,12 @@
   "homepage_url": "https://github.com/antistatique/esti-mate/",
   "browser_specific_settings": {
     "gecko": {
-      "id": "{34c1674f-f75a-4a65-9282-a3ea1a92dcf6}"
+      "id": "{34c1674f-f75a-4a65-9282-a3ea1a92dcf6}",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
     }
   },
   "permissions": [
