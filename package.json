@@ -11,7 +11,6 @@
     "start": "web-ext run --source-dir ./dist/",
     "lint": "web-ext lint --source-dir ./dist/",
     "lint:fix": "eslint --fix src/",
-    "package": "npm run build && cd dist && zip -r ../esti-mate.zip . && cd .. && echo \"✅ Extension package ready for both Chrome and Firefox stores: esti-mate.zip\"",
     "version:patch": "npm version patch --no-git-tag-version && node scripts/sync-manifest-version.cjs",
     "version:minor": "npm version minor --no-git-tag-version && node scripts/sync-manifest-version.cjs",
     "version:major": "npm version major --no-git-tag-version && node scripts/sync-manifest-version.cjs",
