@@ -75,6 +75,7 @@
 
 #todo-wrapper {
   min-width: 320px;
+  max-width: 380px;
 }
 
 #esti-spell-floating-panel {
@@ -126,6 +127,81 @@
 .esti-toast--success { background: #16a34a; }
 .esti-toast--info { background: #2563eb; }
 .esti-toast--error { background: #dc2626; }
+
+.esti-capacity-card {
+  width: 100%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.esti-capacity-meter {
+  display: flex;
+  overflow: hidden;
+  border-radius: 4px;
+  height: 18px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+.esti-capacity-segment {
+  height: 100%;
+  background: var(--segment-color, #94a3b8);
+}
+
+.esti-capacity-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.esti-capacity-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.esti-capacity-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #1d1e1c;
+}
+
+.esti-capacity-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--swatch-color, #94a3b8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.esti-capacity-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #1d1e1c;
+}
+
+.esti-summary-table {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.esti-summary-type {
+  gap: 8px;
+}
+
+.esti-summary-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--summary-swatch-color, #94a3b8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
 
 /* Sticky totals on Harvest estimate table */
 #document-edit-line-items {
