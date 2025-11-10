@@ -158,12 +158,13 @@ export default class Summary {
     // Add selected sum row if any items are selected
     let selectedRowHtml = '';
     if (selectedTotals.qty > 0) {
+      const selectionPercentage = this.calculateSelectionPercentage(selectedTotals.amount, totalAmount);
       selectedRowHtml = `
         <tr class="selected-total" style="background-color: #f0f8ff; border: 2px solid #007cba;">
           <td class="item-select desktop-only"></td>
-          <td class="item-type desktop-only" style="font-style: italic;">Sélection</td>
+          <td class="item-type desktop-only" style="font-style: italic;">Sélection (${selectionPercentage})</td>
           <td class="item-qty desktop-only" style="font-weight: bold;">${selectedTotals.qty}</td>
-          <td class="item-amount" style="font-weight: bold;">${selectedTotals.amount.toFixed(2)}</td>
+          <td class="item-amount" style="font-weight: bold;">${this.formatAmount(selectedTotals.amount)}</td>
         </tr>
       `;
     }
@@ -273,10 +274,11 @@ export default class Summary {
     if (tfoot) {
     let selectedRowHtml = '';
     if (selectedTotals.qty > 0) {
+      const selectionPercentage = this.calculateSelectionPercentage(selectedTotals.amount, totalAmount);
       selectedRowHtml = `
         <tr class="selected-total" style="background-color: #f0f8ff; border: 2px solid #007cba;">
           <td class="item-select desktop-only"></td>
-          <td class="item-type desktop-only" style="font-style: italic;">Sélection</td>
+          <td class="item-type desktop-only" style="font-style: italic;">Sélection (${selectionPercentage})</td>
           <td class="item-qty desktop-only" style="font-weight: bold; cursor: copy;" title="Click to copy">${selectedTotals.qty}</td>
           <td class="item-amount" style="font-weight: bold; cursor: copy;" title="Click to copy">${this.formatAmount(selectedTotals.amount)}</td>
         </tr>
@@ -306,6 +308,14 @@ export default class Summary {
     } catch (_) {
       return (Number(value) || 0).toFixed(2);
     }
+  }
+
+  calculateSelectionPercentage(selectedAmount, totalAmount) {
+    if (!totalAmount || totalAmount <= 0 || !selectedAmount) {
+      return '0%';
+    }
+    const percentage = Math.round((selectedAmount / totalAmount) * 100);
+    return `${percentage}%`;
   }
 
   async copyToClipboard(text) {
