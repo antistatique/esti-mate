@@ -1,6 +1,6 @@
 {
   "name": "esti-mate",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "Your Harvest estimate's best friend",
   "main": "src/index.js",
   "type": "module",
@@ -14,6 +14,7 @@
     "version:patch": "npm version patch --no-git-tag-version && node scripts/sync-manifest-version.cjs",
     "version:minor": "npm version minor --no-git-tag-version && node scripts/sync-manifest-version.cjs",
     "version:major": "npm version major --no-git-tag-version && node scripts/sync-manifest-version.cjs",
+    "sign:firefox": "npm run build && rm -f dist/dummy.js && mkdir -p releases && web-ext sign --source-dir ./dist/ --api-key=$WEB_EXT_API_KEY --api-secret=$WEB_EXT_API_SECRET --channel=$WEB_EXT_CHANNEL --artifacts-dir=./releases/ && mv releases/esti_mate-$(node -p \"require('./package.json').version\").xpi releases/esti-mate-v$(node -p \"require('./package.json').version\").xpi && echo \"✅ Signed Firefox XPI created: releases/esti-mate-v$(node -p \"require('./package.json').version\").xpi\"",
     "prepare-release": "npm run build && rm -f dist/dummy.js && mkdir -p releases && cd dist && zip -r ../releases/esti-mate-v$(node -p \"require('../package.json').version\").zip . && cd .. && npm run source-code && echo \"✅ Release package created: releases/esti-mate-v$(node -p \"require('./package.json').version\").zip\" && echo \"✅ Source code package created: releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip\"",
     "source-code": "mkdir -p releases && git archive --format=zip --output releases/esti-mate-source-v$(node -p \"require('./package.json').version\").zip HEAD -- . ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude)node_modules/**' ':(exclude)dist/**' ':(exclude)releases/**' ':(exclude)*.zip' ':(exclude).git/**' ':(exclude).idea/**' ':(exclude)doc/**' ':(exclude)todos/**' ':(exclude).claude/**' ':(exclude).codex/**' ':(exclude)server/**' ':(exclude).env.*' ':(exclude)**/.DS_Store' && echo '✅ Source code package ready for Firefox submission'"
   },
@@ -24,6 +25,7 @@
     "eslint": "^9.9.0",
     "globals": "^15.9.0",
     "rollup": "^4.22.4",
-    "rollup-plugin-copy": "^3.5.0"
+    "rollup-plugin-copy": "^3.5.0",
+    "web-ext": "^9.2.0"
   }
 }
