@@ -9,8 +9,14 @@ Esti'mate is a browser extension (tested on recent Firefox and Chrome) based on 
 
 ## Download
 
-- [🔥🦊 Firefox](https://addons.mozilla.org/fr/firefox/addon/esti-mate/)
-- [🍭 Chrome](https://chrome.google.com/webstore/detail/estimate/ahhoegjbkdhoembpkmnnghkmfinkkaog)
+Download the latest version from our [official download page](https://esti-mate.antistatique.io):
+
+- **Firefox**: Self-distributed signed `.xpi` with auto-updates
+- **Chrome/Edge/Brave**: Unsigned `.zip` for manual installation
+
+For historical reference:
+- [Firefox Add-ons (archived)](https://addons.mozilla.org/fr/firefox/addon/esti-mate/)
+- [Chrome Web Store (archived)](https://chrome.google.com/webstore/detail/estimate/ahhoegjbkdhoembpkmnnghkmfinkkaog)
 
 ## Developer Guide
 
@@ -97,46 +103,85 @@ Check the [full documentation](https://github.com/antistatique/esti-mate/blob/ma
 
 ## Publication & Release
 
-### Automated Release Process
+### Self-Distribution Model
 
-**Quick Store Package (current version):**
+This extension is **self-distributed** for internal use. It's no longer published to public stores.
+
+### Release Process
+
+#### 1. Version Management
+
+Bump the version (automatically syncs `package.json` and `manifest.json`):
 ```bash
-npm run package:store     # Creates esti-mate.zip ready for Chrome Web Store
+npm run version:patch     # 3.0.4 → 3.0.5
+npm run version:minor     # 3.0.4 → 3.1.0
+npm run version:major     # 3.0.4 → 4.0.0
 ```
 
-**Complete Release (version bump + packages):**
+#### 2. Firefox Signing (Required)
+
+Set up environment variables in `.env.local`:
 ```bash
-npm run prepare-release   # Bumps patch version, builds, and creates release packages
+export WEB_EXT_API_KEY=user:12345678:123
+export WEB_EXT_API_SECRET=your-secret-here
+export WEB_EXT_CHANNEL=unlisted
 ```
 
-This creates:
-- `releases/esti-mate-v2.0.X.zip` - Chrome Web Store ready
-- `releases/esti-mate-source-v2.0.X.zip` - Firefox add-on review package
+Get API credentials from: https://addons.mozilla.org/en-US/developers/addon/api/key/
 
-### Manual Version Management
-
+Sign the extension:
 ```bash
-npm run version:patch     # 2.0.0 → 2.0.1 (automatically syncs manifest.json)
-npm run version:minor     # 2.0.0 → 2.1.0 (automatically syncs manifest.json)
-npm run version:major     # 2.0.0 → 3.0.0 (automatically syncs manifest.json)
+source .env.local
+npm run sign:firefox
 ```
 
-### Individual Browser Packages
+This creates: `releases/esti-mate-vX.X.X.xpi` (signed by Mozilla, ready for distribution)
 
+**Note**: Signing can take 2-10 minutes depending on AMO server load.
+
+#### 3. Chrome Package
+
+Build the Chrome package:
 ```bash
-npm run package:chrome    # Chrome-specific package
-npm run package:firefox   # Firefox-specific package
+npm run build
+cd dist && zip -r ../releases/esti-mate-vX.X.X.zip . && cd ..
 ```
 
-### Store Submission Process
+This creates: `releases/esti-mate-vX.X.X.zip` (unsigned, for manual installation)
 
-1. Run `npm run prepare-release` to create versioned packages
-2. **Chrome Web Store**: Upload `releases/esti-mate-v2.0.X.zip`
-3. **Firefox Add-ons**: Upload both the extension zip and source code zip
-4. Create GitHub release with version tag
-5. Update store descriptions if needed
+#### 4. Create GitHub Release
+
+Upload both files to a new GitHub Release:
+```bash
+gh release create vX.X.X \
+  releases/esti-mate-vX.X.X.xpi \
+  releases/esti-mate-vX.X.X.zip \
+  --title "vX.X.X" \
+  --notes "Release notes here"
+```
+
+#### 5. Auto-Update
+
+**Firefox**: Users automatically get updates via `https://esti-mate.antistatique.io/updates.xml`
+
+**Chrome**: No auto-update. Users must manually download and reinstall from https://esti-mate.antistatique.io
+
+### Distribution
+
+Users download from: **https://esti-mate.antistatique.io**
+
+This page automatically fetches the latest release from GitHub and provides download links.
 
 **Note**: Version numbers are automatically synchronized between `package.json` and `manifest.json`.
+
+## Privacy
+
+See [PRIVACY.md](PRIVACY.md) for our privacy policy.
+
+**TL;DR**:
+- No tracking or analytics
+- Optional features (Airtable, spellcheck) transmit data only if you configure them
+- All data storage is local to your browser
 
 ## License
 
