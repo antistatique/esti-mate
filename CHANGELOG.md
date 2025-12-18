@@ -1,5 +1,6 @@
 *Unreleased*
  - 🧮 Estimate totals footer now sticks to the viewport, showing only the grand total while scrolled so you never lose sight of the final amount.
+ - 📊 Selection summary now shows what percentage of the total budget the checked items represent.
 
 *3.0.3* (2025-11-09)
  - 📦 Release pipeline cleanup: removed the dummy Rollup bundle and legacy `lib/` polyfills so dist/source zips match what Firefox reviews expect.

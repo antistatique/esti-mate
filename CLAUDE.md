@@ -87,61 +87,107 @@ Extension uses `browser.storage.local` for:
 
 - **Spelling Check Feature**: See `./todos/check-speller.md` for detailed implementation plan and the `server/` proxy implementation. Language is auto-detected by the AI; no per-user language setting is required.
 
-## Publication & Release Automation
+## Publication & Release - Self-Distribution Model
 
-### Automated Release Workflow
+The extension is **self-distributed** for internal use, not published to public app stores.
 
-The project includes a complete automated release system:
+### Distribution Setup
 
-**One-Command Release:**
+**Download Page**: https://esti-mate.antistatique.io
+- Hosted on Vercel (`server/` directory)
+- Serves static download page (`server/public/index.html`)
+- Fetches latest version from GitHub Releases API
+- Provides auto-update manifest for Firefox
+
+**Auto-Update Endpoints**:
+- Firefox: `https://esti-mate.antistatique.io/updates.xml`
+- Chrome: No auto-update (manual reinstall required)
+
+### Release Process
+
+#### 1. Version Management
+
 ```bash
-npm run prepare-release    # Complete release workflow
+npm run version:patch     # 3.0.4 → 3.0.5 (syncs package.json + manifest.json)
+npm run version:minor     # 3.0.4 → 3.1.0
+npm run version:major     # 3.0.4 → 4.0.0
 ```
-This command automatically:
-1. Bumps patch version (2.0.0 → 2.0.1)
-2. Syncs version between package.json and manifest.json
-3. Builds the extension 
-4. Creates versioned release packages in `releases/` directory
-5. Generates source code package for Firefox review
 
-**Quick Store Packaging:**
+The `scripts/sync-manifest-version.cjs` script ensures versions stay synchronized.
+
+#### 2. Firefox Signing (Required for Distribution)
+
+**Setup** (one-time):
+1. Get API credentials from https://addons.mozilla.org/en-US/developers/addon/api/key/
+2. Create `.env.local` with:
+   ```bash
+   export WEB_EXT_API_KEY=user:12345678:123
+   export WEB_EXT_API_SECRET=your-secret-here
+   export WEB_EXT_CHANNEL=unlisted
+   ```
+
+**Sign Extension**:
 ```bash
-npm run package:store      # Chrome Web Store ready zip
-npm run package:chrome     # Chrome-specific package
-npm run package:firefox    # Firefox-specific package
+source .env.local
+npm run sign:firefox
 ```
 
-### Version Management
+This creates: `releases/esti-mate-vX.X.X.xpi` (signed, ready for distribution)
 
-**Automated Version Syncing:**
-- `npm run version:patch` - Bumps patch version + syncs manifest
-- `npm run version:minor` - Bumps minor version + syncs manifest  
-- `npm run version:major` - Bumps major version + syncs manifest
+**Notes**:
+- Signing uses `web-ext sign` with `--channel=unlisted`
+- Creates unlisted version (not searchable on AMO)
+- Signing can take 2-10 minutes depending on AMO server load
+- Signed XPI is required for Firefox to install the extension
 
-The `scripts/sync-manifest-version.cjs` script ensures `package.json` and `manifest.json` versions always stay synchronized.
+#### 3. Chrome Package
 
-### Store Submission Files
-
-**Generated Release Files:**
+```bash
+npm run build
+cd dist && zip -r ../releases/esti-mate-vX.X.X.zip . && cd ..
 ```
-releases/
-├── esti-mate-v2.0.X.zip           # Chrome Web Store upload
-├── esti-mate-source-v2.0.X.zip    # Firefox source code (required)
+
+Creates: `releases/esti-mate-vX.X.X.zip` (unsigned, for manual "Load unpacked")
+
+#### 4. GitHub Release
+
+Upload both files to GitHub Releases:
+```bash
+gh release create vX.X.X \
+  releases/esti-mate-vX.X.X.xpi \
+  releases/esti-mate-vX.X.X.zip \
+  --title "vX.X.X" \
+  --notes "Release notes"
 ```
+
+The download page automatically detects new releases and updates links.
+
+### Auto-Update Configuration
+
+**Firefox** (manifest.json):
+```json
+"browser_specific_settings": {
+  "gecko": {
+    "id": "{34c1674f-f75a-4a65-9282-a3ea1a92dcf6}",
+    "update_url": "https://esti-mate.antistatique.io/updates.xml"
+  }
+}
+```
+
+**Update Manifest** (`/updates.xml` endpoint in `server/index.js`):
+- Dynamically fetches latest version from GitHub Releases
+- Returns XML with XPI download URL
+- Firefox checks for updates automatically
+
+**Chrome**:
+- No auto-update for self-distributed extensions
+- Users must manually download and reinstall from https://esti-mate.antistatique.io
 
 ### Important Notes
 
-- Always use the automated scripts to avoid version mismatches
-- Firefox requires both extension and source code packages
-- Chrome Web Store only needs the extension package
-- Version numbers are automatically managed - don't edit manually
-- Source code package excludes build artifacts and dependencies
-
-### Store Publishing Checklist
-
-1. Run `npm run prepare-release` to create packages
-2. Test extension functionality on both browsers
-3. Upload `releases/esti-mate-v2.0.X.zip` to Chrome Web Store
-4. Upload both packages to Firefox Add-ons (extension + source)
-5. Create GitHub release with version tag
-6. Update store descriptions if features changed
+- Version numbers are automatically synchronized - never edit manually
+- Firefox requires signed XPI for distribution (Mozilla signature)
+- Chrome has no signature requirement for "Load unpacked"
+- `.env.local` contains sensitive API keys and is gitignored
+- The download page is static and deployed on Vercel
+- Auto-updates only work for Firefox (Chrome requires manual updates)

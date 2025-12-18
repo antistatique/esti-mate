@@ -72,8 +72,44 @@ app.use((req, res, next) => {
   next();
 });
 
-// Simple healthcheck at root
-app.get('/', (_req, res) => res.json({ ok: true }));
+// Serve static files from public directory
+app.use(express.static(join(__dirname, 'public')));
+
+// Firefox auto-update manifest
+app.get('/updates.xml', async (_req, res) => {
+  try {
+    const response = await fetch('https://api.github.com/repos/antistatique/esti-mate/releases/latest');
+    const data = await response.json();
+    const version = data.tag_name.replace('v', '');
+    const xpiAsset = data.assets.find(a => a.name.endsWith('.xpi'));
+
+    if (!xpiAsset) {
+      return res.status(404).send('No XPI found in latest release');
+    }
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+  <addons>
+    <addon id="{34c1674f-f75a-4a65-9282-a3ea1a92dcf6}">
+      <updates>
+        <update version="${version}">
+          <link>${xpiAsset.browser_download_url}</link>
+        </update>
+      </updates>
+    </addon>
+  </addons>
+</updates>`;
+
+    res.set('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (error) {
+    console.error('Failed to fetch updates:', error);
+    res.status(500).send('Failed to fetch updates');
+  }
+});
+
+// Health check endpoint
+app.get('/health', (_req, res) => res.json({ ok: true }));
 app.get('/config', (_req, res) => {
   res.json({
     port: PORT,
