@@ -22,8 +22,10 @@ For historical reference:
 
 ### Prerequisites
 
-- Node.js (LTS version recommended)
-- npm (comes with Node.js) or yarn
+- Node.js 22 LTS (required for reproducible builds)
+- npm 10.x (comes with Node.js 22)
+
+**Note for Mozilla reviewers**: This project uses Node.js 22 LTS. An `.nvmrc` file is included. Run `nvm use` to switch to the correct version.
 
 ### Installation
 
@@ -33,13 +35,9 @@ For historical reference:
    cd esti-mate
    ```
 
-2. Install dependencies:
+2. Install dependencies (use npm to ensure reproducible builds via package-lock.json):
    ```
-   npm install
-   ```
-   or if you're using yarn:
-   ```
-   yarn
+   npm ci
    ```
 
 ### Building the Extension
@@ -51,6 +49,22 @@ npm run build
 ```
 
 This compiles all source files and copies assets to the `dist/` directory, ready for browser loading.
+
+### Reproducible Build (for Mozilla Reviewers)
+
+To reproduce the exact build:
+
+1. **Environment**: Ubuntu 24.04 LTS (or compatible Linux), Node.js 22 LTS, npm 10.x
+2. **Extract** the source code package
+3. **Install dependencies** with locked versions:
+   ```bash
+   npm ci
+   ```
+4. **Build**:
+   ```bash
+   npm run build
+   ```
+5. **Compare**: The `dist/` directory should match the extension package contents
 
 ### Development
 
