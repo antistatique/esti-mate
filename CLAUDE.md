@@ -35,7 +35,7 @@ The extension activates on:
 ### Building
 - `npm run build`: Build the extension using Rollup
 - `npm run watch`: Build in watch mode for development
-- `npm run build:ext`: Build and package extension for distribution
+- `npm run prepare-release`: Build and package extension (.zip) for distribution
 
 ### Development
 - `npm run start`: Run extension in Firefox using web-ext
@@ -151,8 +151,10 @@ Creates: `releases/esti-mate-vX.X.X.zip` (unsigned, for manual "Load unpacked")
 
 #### 4. GitHub Release
 
-Upload both files to GitHub Releases:
+Tag, push, and create the release:
 ```bash
+git tag vX.X.X
+git push origin vX.X.X
 gh release create vX.X.X \
   releases/esti-mate-vX.X.X.xpi \
   releases/esti-mate-vX.X.X.zip \
@@ -160,7 +162,7 @@ gh release create vX.X.X \
   --notes "Release notes"
 ```
 
-The download page automatically detects new releases and updates links.
+The download page and `/updates.xml` automatically pick up new releases via the GitHub API.
 
 ### Auto-Update Configuration
 

@@ -165,8 +165,10 @@ This creates: `releases/esti-mate-vX.X.X.zip` (unsigned, for manual installation
 
 #### 4. Create GitHub Release
 
-Upload both files to a new GitHub Release:
+Tag, push, and create the release:
 ```bash
+git tag vX.X.X
+git push origin vX.X.X
 gh release create vX.X.X \
   releases/esti-mate-vX.X.X.xpi \
   releases/esti-mate-vX.X.X.zip \
