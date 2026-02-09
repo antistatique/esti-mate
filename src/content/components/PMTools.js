@@ -7,7 +7,7 @@ export default class PMTools {
 
   init(settings, app) {
     this.app = app;
-    this.pmField = document.querySelector('#invoice_item_rows tr:last-of-type .quantity input');
+    this.pmField = document.querySelector('#invoice_item_rows tr:last-of-type .js-quantity');
     this.pmPercentage = settings.pmPercentage;
 
     this.removeIfAlreadyExisting();
@@ -68,7 +68,7 @@ export default class PMTools {
   }
 
   onQuantityInputChange(e) {
-    if (e.target.closest('tr') && e.target.matches('.quantity input')) {
+    if (e.target.closest('tr') && e.target.matches('.js-quantity')) {
       this.updatePMTotal();
     }
   }
@@ -84,7 +84,7 @@ export default class PMTools {
   }
 
   calculateTotalHours() {
-    this.totalHours = Array.from(document.querySelectorAll('#invoice_item_rows tr:not(:last-child) .quantity input'))
+    this.totalHours = Array.from(document.querySelectorAll('#invoice_item_rows tr:not(:last-of-type) .js-quantity'))
       .reduce((total, input) => total + parseFloat(input.value || 0), 0);
   }
 
