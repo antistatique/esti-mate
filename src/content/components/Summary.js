@@ -457,6 +457,7 @@ export default class Summary {
       segment.className = 'esti-capacity-segment';
       segment.style.setProperty('--segment-color', item.color);
       segment.style.width = `${percentage}%`;
+      segment.setAttribute('data-esti-tip', `${item.label} — ${Math.round(percentage)}%`);
       meter.appendChild(segment);
     });
 

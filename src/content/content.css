@@ -135,16 +135,57 @@
 
 .esti-capacity-meter {
   display: flex;
-  overflow: hidden;
   border-radius: 4px;
   height: 18px;
   background: #f3f4f6;
   border: 1px solid #e5e7eb;
 }
 
+.esti-capacity-segment:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.esti-capacity-segment:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.esti-capacity-segment:first-child:last-child {
+  border-radius: 4px;
+}
+
 .esti-capacity-segment {
+  position: relative;
+  cursor: default;
   height: 100%;
   background: var(--segment-color, #94a3b8);
+}
+
+.esti-capacity-segment:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1d1e1c;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.esti-capacity-segment:hover::after {
+  content: attr(data-esti-tip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1d1e1c;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
 }
 
 .esti-capacity-list {
