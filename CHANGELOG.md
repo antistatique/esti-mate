@@ -1,4 +1,6 @@
 *Unreleased*
+
+*4.0.0* (2026-01-21)
  - 🧮 Estimate totals footer now sticks to the viewport, showing only the grand total while scrolled so you never lose sight of the final amount.
  - 📊 Selection summary now shows what percentage of the total budget the checked items represent.
 

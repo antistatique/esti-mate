@@ -90,7 +90,7 @@ app.get('/updates.xml', async (_req, res) => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <updates>
   <addons>
-    <addon id="{34c1674f-f75a-4a65-9282-a3ea1a92dcf6}">
+    <addon id="{9caec9ed-73a1-49b9-954f-8c514abff697}">
       <updates>
         <update version="${version}">
           <link>${xpiAsset.browser_download_url}</link>
