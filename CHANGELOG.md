@@ -1,4 +1,5 @@
 *Unreleased*
+ - 📊 Capacity meter segments now show a tooltip on hover with category name and percentage
  - 🐛 Fix PM hours calculation that summed unit prices alongside quantities, and incorrectly included the PM row itself in the total
 
 *4.0.0* (2026-01-21)
