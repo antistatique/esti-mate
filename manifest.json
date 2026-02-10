@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Esti'mate",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Your Harvest estimate's best friend",
   "author": "Antistatique",
   "homepage_url": "https://esti-mate.antistatique.io/",
@@ -52,6 +52,7 @@
         "*://*.harvestapp.com/estimates/*/duplicate",
         "*://*.harvestapp.com/estimates/new",
         "*://*.harvestapp.com/estimates/*",
+        "*://*.harvestapp.com/projects/*",
         "file:///Users/gde/Downloads/Estimate_Sandbox.html",
         "file:///Users/gde/Downloads/Estimate_New_Sandbox.html"
       ],

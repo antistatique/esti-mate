@@ -17,7 +17,9 @@ ready(() => {
   let appView;
 
   // Determine the current view and target element
-  if (d.querySelector('.client-doc-notes')) {
+  if (window.location.pathname.match(/^\/projects\/\d+$/)) {
+    appView = 'project';
+  } else if (d.querySelector('.client-doc-notes')) {
     targetQueryElement = '.client-doc-notes';
     appView = 'view';
   } else if (d.querySelector('#edit_estimate')) {
@@ -29,6 +31,12 @@ ready(() => {
   } else {
     // page not compatible with this plugin
     return false;
+  }
+
+  // Project pages only need BillableBadge — skip estimate DOM injection
+  if (appView === 'project') {
+    app.init('project');
+    return;
   }
 
   // Add spell check dropdown ONLY in edit/new modes

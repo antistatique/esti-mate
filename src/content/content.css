@@ -275,3 +275,10 @@
 #document-edit-line-items tfoot.is-stuck tr:not(:first-child) {
   display: none;
 }
+
+/* Non-billable badge on project budget task rows */
+.esti-badge-nonbillable {
+  background-color: #fef3c7;
+  color: #92400e;
+  margin-left: 6px;
+}
