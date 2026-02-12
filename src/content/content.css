@@ -276,6 +276,24 @@
   display: none;
 }
 
+/* Archive toggle on project budget header */
+.esti-archive-toggle {
+  margin-right: 16px;
+}
+
+tr.esti-hidden {
+  display: none;
+}
+
+/* Mask totals cells with "—" when archived rows are hidden (pure CSS, no innerHTML) */
+tr.esti-totals-masked td:not(.col-toggle):not(.col-name) > * {
+  display: none;
+}
+
+tr.esti-totals-masked td:not(.col-toggle):not(.col-name)::after {
+  content: '—';
+}
+
 /* Non-billable badge on project budget task rows */
 .esti-badge-nonbillable {
   background-color: #fef3c7;
