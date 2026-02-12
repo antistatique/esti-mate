@@ -19,6 +19,8 @@ ready(() => {
   // Determine the current view and target element
   if (window.location.pathname.match(/^\/projects\/\d+$/)) {
     appView = 'project';
+  } else if (window.location.pathname.match(/^\/projects\/\d+\/edit$/)) {
+    appView = 'projectEdit';
   } else if (d.querySelector('.client-doc-notes')) {
     targetQueryElement = '.client-doc-notes';
     appView = 'view';
@@ -33,9 +35,9 @@ ready(() => {
     return false;
   }
 
-  // Project pages only need BillableBadge — skip estimate DOM injection
-  if (appView === 'project') {
-    app.init('project');
+  // Project pages — skip estimate DOM injection
+  if (appView === 'project' || appView === 'projectEdit') {
+    app.init(appView);
     return;
   }
 

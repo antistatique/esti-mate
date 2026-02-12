@@ -294,6 +294,11 @@ tr.esti-totals-masked td:not(.col-toggle):not(.col-name)::after {
   content: '—';
 }
 
+/* Edit task button in project edit tasks table */
+.esti-task-edit-btn {
+  margin-right: 6px;
+}
+
 /* Non-billable badge on project budget task rows */
 .esti-badge-nonbillable {
   background-color: #fef3c7;

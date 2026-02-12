@@ -6,6 +6,7 @@ import AirtableIntegration from './components/AirtableIntegration.js';
 import SpellChecker from './components/SpellChecker.js';
 import StickyTotals from './components/StickyTotals.js';
 import BillableBadge from './components/BillableBadge.js';
+import TaskEditButton from './components/TaskEditButton.js';
 
 export default class App {
   constructor() {
@@ -15,6 +16,7 @@ export default class App {
     this.spellChecker = new SpellChecker();
     this.stickyTotals = new StickyTotals();
     this.billableBadge = new BillableBadge();
+    this.taskEditButton = new TaskEditButton();
     this.settings = {};
   }
 
@@ -22,6 +24,11 @@ export default class App {
     try {
       if (appView === 'project') {
         this.billableBadge.init();
+        return;
+      }
+
+      if (appView === 'projectEdit') {
+        this.taskEditButton.init();
         return;
       }
 
