@@ -1,6 +1,9 @@
 *Unreleased*
+
+*4.0.1* (2026-02-09)
  - 📊 Capacity meter segments now show a tooltip on hover with category name and percentage
  - 🐛 Fix PM hours calculation that summed unit prices alongside quantities, and incorrectly included the PM row itself in the total
+ - 🔒 Upgrade Express to v5 to fix qs DoS vulnerability (Dependabot #74)
 
 *4.0.0* (2026-01-21)
  - 🧮 Estimate totals footer now sticks to the viewport, showing only the grand total while scrolled so you never lose sight of the final amount.
