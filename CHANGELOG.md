@@ -1,4 +1,6 @@
 *Unreleased*
+ - 🗂️ New "Hide archived" checkbox on project budget pages to filter out archived tasks and mask totals
+ - 🏷️ Non-billable badge now coexists with Harvest's Archived badge on the same row
 
 *4.0.1* (2026-02-09)
  - 📊 Capacity meter segments now show a tooltip on hover with category name and percentage
