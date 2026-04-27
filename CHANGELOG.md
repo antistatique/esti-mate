@@ -1,4 +1,5 @@
 *Unreleased*
+ - ✏️ Inline "Edit" button on project edit task table to rename tasks without leaving the page
  - 🗂️ New "Hide archived" checkbox on project budget pages to filter out archived tasks and mask totals
  - 🏷️ Non-billable badge now coexists with Harvest's Archived badge on the same row
 
