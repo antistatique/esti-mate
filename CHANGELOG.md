@@ -1,4 +1,5 @@
 *Unreleased*
+ - 🌐 New "Translate to English" entry in the IA Tools menu — translates line-item descriptions via the server proxy with per-row review (Accept/Reject). Translation is shown as clean readable text in the floating panel; preserves *bold*, _italic_ and em-dash bullets; also fixes spelling/grammar during translation
  - ✏️ Inline "Edit" button on project edit task table to rename tasks without leaving the page
  - 🗂️ New "Hide archived" checkbox on project budget pages to filter out archived tasks and mask totals
  - 🏷️ Non-billable badge now coexists with Harvest's Archived badge on the same row
