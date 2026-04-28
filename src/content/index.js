@@ -124,9 +124,29 @@ ready(() => {
         }
       });
       
+      // Create translate menu item
+      const translateItem = d.createElement('li');
+      translateItem.setAttribute('role', 'none');
+
+      const translateLink = d.createElement('a');
+      translateLink.setAttribute('role', 'menuitem');
+      translateLink.setAttribute('tabindex', '-1');
+      translateLink.className = 'pds-menu-item';
+      translateLink.textContent = 'Translate to English';
+      translateLink.href = '#';
+
+      translateLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        menuBackdrop.style.display = 'none';
+        iaDropdownButton.setAttribute('aria-expanded', 'false');
+        document.dispatchEvent(new CustomEvent('estiMate:translate'));
+      });
+
       // Build the dropdown structure
       spellCheckItem.appendChild(spellCheckLink);
       menuList.appendChild(spellCheckItem);
+      translateItem.appendChild(translateLink);
+      menuList.appendChild(translateItem);
       menu.appendChild(menuList);
       menuBackdrop.appendChild(menu);
       iaDropdownContainer.appendChild(iaDropdownButton);

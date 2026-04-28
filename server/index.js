@@ -131,6 +131,10 @@ function requireSecret(req, res, next) {
 app.use('/check-spelling', requireSecret);
 app.use('/check-spelling', spellingRouter);
 
+const translateRouter = (await import('./routes/translate.js')).default;
+app.use('/translate', requireSecret);
+app.use('/translate', translateRouter);
+
 app.use((err, _req, res, _next) => {
   console.error(err);
   res.status(500).json({ error: 'Internal Server Error' });

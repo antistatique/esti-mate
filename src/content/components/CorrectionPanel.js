@@ -7,6 +7,11 @@ export default class CorrectionPanel {
     this._keyHandler = null;
     this._lastAccept = null;
     this._lastReject = null;
+    this.mode = 'diff';
+  }
+
+  setMode(mode) {
+    this.mode = mode === 'plain' ? 'plain' : 'diff';
   }
 
   init() {
@@ -118,12 +123,16 @@ export default class CorrectionPanel {
       // Position immediately, then settle after the scroll animation
       this.positionNear(anchor);
       setTimeout(() => this.positionNear(anchor), 200);
+    }
 
-      // Build highlighted diff against the current textarea content
-      const originalText = anchor.value || '';
-      const correctedHtml = this.highlightDiff(originalText, item.corrected || '');
-      const view = this.container.querySelector('#esti-corrected-view');
-      if (view) view.innerHTML = correctedHtml;
+    const view = this.container.querySelector('#esti-corrected-view');
+    if (view) {
+      if (this.mode === 'plain') {
+        view.innerHTML = this.escape(item.corrected || '');
+      } else {
+        const originalText = anchor?.value || '';
+        view.innerHTML = this.highlightDiff(originalText, item.corrected || '');
+      }
     }
   }
 

@@ -1,7 +1,7 @@
 import CorrectionPanel from './CorrectionPanel.js';
 import collectRows from './utils/collectRows.js';
 
-export default class SpellChecker {
+export default class Translator {
   constructor() {
     this.settings = {};
     this.app = null;
@@ -14,36 +14,40 @@ export default class SpellChecker {
     this.settings = settings || {};
     this.app = app;
     this.panel.init();
+    this.panel.setMode('plain');
     this.bindOnce();
   }
 
   bindOnce() {
     if (this.bound) return;
     this.bound = true;
-    document.addEventListener('estiMate:spell-check', () => this.run());
+    document.addEventListener('estiMate:translate', () => this.run());
   }
 
   async run() {
     try {
       const serverUrl = (this.settings.serverUrl || '').replace(/\/$/, '');
       if (!serverUrl) {
-        console.warn('SpellChecker: serverUrl not configured in Options');
+        console.warn('Translator: serverUrl not configured in Options');
       }
 
       const items = collectRows();
-      const payload = {
-        descriptions: items.map(({ id, text }) => ({ id, text }))
-      };
 
-      // Label progress helpers
       const labelEl = document.querySelector('#ia-dropdown-button .ia-label') || document.getElementById('ia-dropdown-button');
       this._labelRestore = labelEl ? (labelEl.textContent || 'IA Tools') : 'IA Tools';
       const setLabel = (txt) => { if (labelEl) labelEl.textContent = txt; };
-      // Run per-row requests with limited concurrency for accurate progress
+
       const byId = new Map(items.map(i => [i.id, i]));
       const total = items.length;
+
+      if (total === 0) {
+        this.panel.hide();
+        this.panel.showToast('No translations to review', 'success');
+        return;
+      }
+
       let completed = 0;
-      setLabel(`Checking 0/${total}...`);
+      setLabel(`Translating 0/${total}...`);
 
       const limit = 3;
       const results = new Array(total);
@@ -59,7 +63,7 @@ export default class SpellChecker {
       const runBatch = async (batch) => {
         const body = JSON.stringify({ descriptions: batch.map(b => ({ id: b.row.id, text: b.row.text })) });
         try {
-          const res = await fetchWithTimeout(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
+          const res = await fetchWithTimeout(`${serverUrl || 'http://localhost:3000'}/translate`, {
             method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': this.settings.airtableKey || '' }, body
           });
           const data = await res.json();
@@ -69,12 +73,11 @@ export default class SpellChecker {
             results[b.idx] = { ...corr, index: b.row.index };
           });
           completed += batch.length;
-          setLabel(`Checking ${completed}/${total}...`);
+          setLabel(`Translating ${completed}/${total}...`);
         } catch (e) {
-          // fallback to singles
           for (const b of batch) {
             try {
-              const r = await fetchWithTimeout(`${serverUrl || 'http://localhost:3000'}/check-spelling`, {
+              const r = await fetchWithTimeout(`${serverUrl || 'http://localhost:3000'}/translate`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': this.settings.airtableKey || '' }, body: JSON.stringify({ descriptions: [{ id: b.row.id, text: b.row.text }] })
               }, 20000);
               const data = await r.json();
@@ -84,13 +87,12 @@ export default class SpellChecker {
               results[b.idx] = { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [], index: b.row.index };
             } finally {
               completed += 1;
-              setLabel(`Checking ${completed}/${total}...`);
+              setLabel(`Translating ${completed}/${total}...`);
             }
           }
         }
       };
 
-      // Build batches of up to 2 items with size guard
       const MAX_BATCH_CHARS = 2000;
       const MAX_ROW_CHARS = 1400;
       const batches = [];
@@ -122,19 +124,14 @@ export default class SpellChecker {
       });
       await Promise.all(workers);
 
-      // Highlight rows
+      // Force every row to appear in the review panel regardless of whether
+      // the AI reported a change. Rows where corrected === original will still
+      // show — Accept is a no-op, Reject simply skips.
+      results.forEach((r) => { if (r) r.hasIssues = true; });
+
       this.panel.setItems(results);
       this.panel.highlightRows(results);
 
-      // If no issues at first shot, show a toast and stop
-      if (!results.some(r => r.hasIssues)) {
-        this.panel.hide();
-        this.panel.showToast('No spelling/grammar issues found', 'success');
-        setLabel(this._labelRestore);
-        return;
-      }
-
-      // Define handlers so we can re-render with same closures
       const acceptHandler = (id) => {
         const result = results.find(r => r.id === id);
         const base = byId.get(id);
@@ -158,16 +155,13 @@ export default class SpellChecker {
         this.panel.render(acceptHandler, rejectHandler);
       };
 
-      // Render review panel near the first item with issues
       this.panel.render(acceptHandler, rejectHandler);
 
-      // Restore label after finishing
       setLabel(this._labelRestore);
     } catch (e) {
-      console.error('Spell check failed', e);
+      console.error('Translation failed', e);
       this.panel.setItems([]);
       this.panel.renderIntro();
-      // Restore label on error
       const labelEl2 = document.querySelector('#ia-dropdown-button .ia-label') || document.getElementById('ia-dropdown-button');
       if (labelEl2) labelEl2.textContent = this._labelRestore || 'IA Tools';
     }

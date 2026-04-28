@@ -4,6 +4,7 @@ import Summary from './components/Summary.js';
 import PMTools from './components/PMTools.js';
 import AirtableIntegration from './components/AirtableIntegration.js';
 import SpellChecker from './components/SpellChecker.js';
+import Translator from './components/Translator.js';
 import StickyTotals from './components/StickyTotals.js';
 import BillableBadge from './components/BillableBadge.js';
 import TaskEditButton from './components/TaskEditButton.js';
@@ -14,6 +15,7 @@ export default class App {
     this.pmTools = new PMTools();
     this.airtable = new AirtableIntegration();
     this.spellChecker = new SpellChecker();
+    this.translator = new Translator();
     this.stickyTotals = new StickyTotals();
     this.billableBadge = new BillableBadge();
     this.taskEditButton = new TaskEditButton();
@@ -34,8 +36,9 @@ export default class App {
 
       await this.loadSettings();
       this.summary.init();
-      // Always bind the spellchecker so the menu event works on any view
+      // Always bind the spellchecker and translator so the menu events work on any view
       this.spellChecker.init(this.settings, this);
+      this.translator.init(this.settings, this);
 
       if (appView === 'edit' || appView === 'new') {
         this.stickyTotals.init();
