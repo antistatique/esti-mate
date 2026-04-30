@@ -6,7 +6,7 @@ const router = Router();
 
 const openaiKey = process.env.OPENAI_API_KEY;
 const openai = openaiKey ? new OpenAI({ apiKey: openaiKey }) : null;
-const MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
+const MODEL = process.env.OPENAI_MODEL || 'gpt-5-nano';
 
 // Very naive local fallback to allow basic testing without OpenAI
 function localSpellcheck(text) {
@@ -92,7 +92,6 @@ router.post('/', async (req, res) => {
           { role: 'system', content: system },
           { role: 'user', content: user },
         ],
-        temperature: 0.2,
         response_format: { type: 'json_object' }
       });
     } catch (apiErr) {
