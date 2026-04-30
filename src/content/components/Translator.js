@@ -50,7 +50,46 @@ export default class Translator {
       setLabel(`Translating 0/${total}...`);
 
       const limit = 3;
-      const results = new Array(total);
+      // Initialize results with pending placeholders so the panel can open
+      // immediately and rows can be reviewed as their batches return.
+      const results = items.map((row) => ({
+        id: row.id,
+        index: row.index,
+        hasIssues: true,
+        corrected: row.text,
+        changes: [],
+        pending: true,
+        pendingLabel: 'Translating…',
+      }));
+
+      const acceptHandler = (id) => {
+        const result = results.find(r => r.id === id);
+        if (!result || result.pending) return;
+        const base = byId.get(id);
+        if (base && base.textarea) {
+          base.textarea.value = result.corrected;
+          base.textarea.dispatchEvent(new Event('input', { bubbles: true }));
+          this.panel.unhighlightRow(id, result.index);
+          result.hasIssues = false;
+          this.panel.setItems(results);
+          this.panel.render(acceptHandler, rejectHandler);
+          this.app.generateSummary?.();
+        }
+      };
+
+      const rejectHandler = (id) => {
+        const result = results.find(r => r.id === id);
+        if (!result) return;
+        this.panel.unhighlightRow(id, result.index);
+        result.hasIssues = false;
+        this.panel.setItems(results);
+        this.panel.render(acceptHandler, rejectHandler);
+      };
+
+      // Open the panel immediately with placeholders.
+      this.panel.setItems(results);
+      this.panel.highlightRows(results);
+      this.panel.render(acceptHandler, rejectHandler);
 
       const fetchWithTimeout = async (url, options, timeoutMs = 25000) => {
         const ctrl = new AbortController();
@@ -58,6 +97,10 @@ export default class Translator {
         try {
           return await fetch(url, { ...options, signal: ctrl.signal });
         } finally { clearTimeout(id); }
+      };
+
+      const applyResult = (idx, base, corr) => {
+        results[idx] = { ...corr, index: base.index, hasIssues: true, pending: false };
       };
 
       const runBatch = async (batch) => {
@@ -70,10 +113,12 @@ export default class Translator {
           const list = data.corrections || [];
           batch.forEach((b, i) => {
             const corr = list[i] || { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [] };
-            results[b.idx] = { ...corr, index: b.row.index };
+            applyResult(b.idx, b.row, corr);
           });
           completed += batch.length;
           setLabel(`Translating ${completed}/${total}...`);
+          this.panel.setItems(results);
+          this.panel.refresh();
         } catch (e) {
           for (const b of batch) {
             try {
@@ -82,12 +127,14 @@ export default class Translator {
               }, 20000);
               const data = await r.json();
               const corr = (data.corrections && data.corrections[0]) || { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [] };
-              results[b.idx] = { ...corr, index: b.row.index };
+              applyResult(b.idx, b.row, corr);
             } catch (_) {
-              results[b.idx] = { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [], index: b.row.index };
+              applyResult(b.idx, b.row, { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [] });
             } finally {
               completed += 1;
               setLabel(`Translating ${completed}/${total}...`);
+              this.panel.setItems(results);
+              this.panel.refresh();
             }
           }
         }
@@ -123,39 +170,6 @@ export default class Translator {
         }
       });
       await Promise.all(workers);
-
-      // Force every row to appear in the review panel regardless of whether
-      // the AI reported a change. Rows where corrected === original will still
-      // show — Accept is a no-op, Reject simply skips.
-      results.forEach((r) => { if (r) r.hasIssues = true; });
-
-      this.panel.setItems(results);
-      this.panel.highlightRows(results);
-
-      const acceptHandler = (id) => {
-        const result = results.find(r => r.id === id);
-        const base = byId.get(id);
-        if (result && base && base.textarea) {
-          base.textarea.value = result.corrected;
-          base.textarea.dispatchEvent(new Event('input', { bubbles: true }));
-          this.panel.unhighlightRow(id, result.index);
-          result.hasIssues = false;
-          this.panel.setItems(results);
-          this.panel.render(acceptHandler, rejectHandler);
-          this.app.generateSummary?.();
-        }
-      };
-
-      const rejectHandler = (id) => {
-        const result = results.find(r => r.id === id);
-        if (!result) return;
-        this.panel.unhighlightRow(id, result.index);
-        result.hasIssues = false;
-        this.panel.setItems(results);
-        this.panel.render(acceptHandler, rejectHandler);
-      };
-
-      this.panel.render(acceptHandler, rejectHandler);
 
       setLabel(this._labelRestore);
     } catch (e) {

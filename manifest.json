@@ -27,6 +27,9 @@
   ],
   "host_permissions": [
     "*://api.airtable.com/*",
+    "https://esti-mate.antistatique.io/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*",
     "file:///*"
   ],
   "action": {

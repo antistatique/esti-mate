@@ -14,6 +14,18 @@ export default class CorrectionPanel {
     this.mode = mode === 'plain' ? 'plain' : 'diff';
   }
 
+  // True when the current row is the last in the issues list AND at least one
+  // other item is still pending. In that state, Next has nowhere meaningful to
+  // go, so we render it as a loading indicator and short-circuit navigation.
+  isNextLoading() {
+    const item = this.items[this.currentIndex];
+    if (!item || !item.hasIssues) return false;
+    const issues = this.items.filter(i => i.hasIssues);
+    const pos = issues.findIndex(it => it.id === item.id) + 1;
+    if (pos !== issues.length) return false;
+    return this.items.some(i => i && i.pending);
+  }
+
   init() {
     // Always use a floating container so the panel stays visible
     let floating = document.getElementById('esti-spell-floating-panel');
@@ -79,14 +91,16 @@ export default class CorrectionPanel {
 
     // Build panel for a single item
     const pos = Math.max(issues.findIndex(it => it && item && it.id === item.id), 0) + 1;
-    const posInfo = `${pos} / ${total}`;
+    const anyPending = this.items.some(i => i && i.pending);
+    const pendingDots = anyPending ? ' <span class="esti-spell-pending-dots"><span>.</span><span>.</span><span>.</span></span>' : '';
+    const posInfo = anyPending ? `${pos}${pendingDots}` : `${pos} / ${total}`;
     this.container.innerHTML = `
       <div class="esti-spell-panel">
         <div class="esti-spell-header">
           <h4 style="margin:0;">Row #${item.index + 1} <span class="pds-text-sm" style="opacity:.7">(${posInfo})</span></h4>
           <div class="esti-spell-nav">
             <button class="pds-button pds-button-secondary pds-button-sm" data-nav="prev" aria-keyshortcuts="K ArrowLeft" title="Prev (K / ←)">Prev (K)</button>
-            <button class="pds-button pds-button-secondary pds-button-sm" data-nav="next" aria-keyshortcuts="J ArrowRight" title="Next (J / →)">Next (J)</button>
+            <button class="pds-button pds-button-secondary pds-button-sm" data-nav="next" aria-keyshortcuts="J ArrowRight" title="Next (J / →)"${this.isNextLoading() ? ' disabled style="opacity:0.5"' : ''}>${this.isNextLoading() ? 'Next <span class="esti-spell-pending-dots"><span>.</span><span>.</span><span>.</span></span>' : 'Next (J)'}</button>
             <button class="pds-button pds-button-secondary pds-button-sm" data-nav="close" aria-keyshortcuts="Escape" title="Close (Esc)" style="margin-left:8px;">✕</button>
           </div>
         </div>
@@ -127,17 +141,97 @@ export default class CorrectionPanel {
 
     const view = this.container.querySelector('#esti-corrected-view');
     if (view) {
-      if (this.mode === 'plain') {
+      if (item.pending) {
+        view.innerHTML = `<em style="opacity:.6">${this.escape(item.pendingLabel || 'Loading…')}</em>`;
+      } else if (this.mode === 'plain') {
         view.innerHTML = this.escape(item.corrected || '');
       } else {
         const originalText = anchor?.value || '';
         view.innerHTML = this.highlightDiff(originalText, item.corrected || '');
       }
     }
+
+    const acceptBtn = this.container.querySelector('[data-action="accept"]');
+    if (acceptBtn) {
+      if (item.pending) {
+        acceptBtn.setAttribute('disabled', 'disabled');
+        acceptBtn.style.opacity = '0.5';
+      } else {
+        acceptBtn.removeAttribute('disabled');
+        acceptBtn.style.opacity = '';
+      }
+    }
+  }
+
+  // Re-render the current row's content/counter in place (no scroll, no reposition).
+  // Use this when items update progressively while the panel is already open.
+  refresh() {
+    if (!this.container || this.container.style.display === 'none') return;
+    const issues = this.items.filter(i => i.hasIssues);
+    const total = issues.length;
+    if (total === 0) { this.hide(); this.container.innerHTML = ''; return; }
+    if (this.currentIndex < 0 || !this.items[this.currentIndex]?.hasIssues) {
+      this.currentIndex = this.items.findIndex(i => i.hasIssues);
+    }
+    const item = this.items[this.currentIndex];
+    if (!item) return;
+
+    const headerH4 = this.container.querySelector('.esti-spell-header h4');
+    if (headerH4) {
+      const pos = Math.max(issues.findIndex(it => it && it.id === item.id), 0) + 1;
+      const anyPending = this.items.some(i => i && i.pending);
+      const pendingDots = anyPending ? ' <span class="esti-spell-pending-dots"><span>.</span><span>.</span><span>.</span></span>' : '';
+      const posInfo = anyPending ? `${pos}${pendingDots}` : `${pos} / ${total}`;
+      headerH4.innerHTML = `Row #${item.index + 1} <span class="pds-text-sm" style="opacity:.7">(${posInfo})</span>`;
+    }
+
+    const view = this.container.querySelector('#esti-corrected-view');
+    if (view) {
+      if (item.pending) {
+        view.innerHTML = `<em style="opacity:.6">${this.escape(item.pendingLabel || 'Loading…')}</em>`;
+      } else if (this.mode === 'plain') {
+        view.innerHTML = this.escape(item.corrected || '');
+      } else {
+        const anchor = this.findRowByIndex(item.index)?.querySelector('textarea');
+        const originalText = anchor?.value || '';
+        view.innerHTML = this.highlightDiff(originalText, item.corrected || '');
+      }
+    }
+
+    const acceptBtn = this.container.querySelector('[data-action="accept"]');
+    const rejectBtn = this.container.querySelector('[data-action="reject"]');
+    if (acceptBtn) {
+      acceptBtn.setAttribute('data-id', item.id);
+      if (item.pending) {
+        acceptBtn.setAttribute('disabled', 'disabled');
+        acceptBtn.style.opacity = '0.5';
+      } else {
+        acceptBtn.removeAttribute('disabled');
+        acceptBtn.style.opacity = '';
+      }
+    }
+    if (rejectBtn) rejectBtn.setAttribute('data-id', item.id);
+
+    const nextBtn = this.container.querySelector('[data-nav="next"]');
+    if (nextBtn) {
+      if (this.isNextLoading()) {
+        nextBtn.setAttribute('disabled', 'disabled');
+        nextBtn.style.opacity = '0.5';
+        nextBtn.innerHTML = 'Next <span class="esti-spell-pending-dots"><span>.</span><span>.</span><span>.</span></span>';
+      } else {
+        nextBtn.removeAttribute('disabled');
+        nextBtn.style.opacity = '';
+        nextBtn.innerHTML = 'Next (J)';
+      }
+    }
   }
 
   next(after) {
     if (!this.items.length) return;
+    // At the frontier of known issues with batches still pending: no-op.
+    // The Next button is already shown in a loading state — wrapping back to
+    // row 1 here would hide the fact that more issues might still arrive.
+    if (this.isNextLoading()) return;
     let i = this.currentIndex;
     for (let step = 0; step < this.items.length; step++) {
       i = (i + 1) % this.items.length;

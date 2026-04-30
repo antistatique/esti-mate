@@ -46,7 +46,56 @@ export default class SpellChecker {
       setLabel(`Checking 0/${total}...`);
 
       const limit = 3;
-      const results = new Array(total);
+      // Initialize results with pending placeholders (hasIssues=false so no row
+      // appears in the panel until its batch returns with a real verdict).
+      const results = items.map((row) => ({
+        id: row.id,
+        index: row.index,
+        hasIssues: false,
+        corrected: row.text,
+        changes: [],
+        pending: true,
+        pendingLabel: 'Checking…',
+      }));
+
+      let panelOpened = false;
+      // Define handlers up front so progressive renders can pass them to render().
+      const acceptHandler = (id) => {
+        const result = results.find(r => r.id === id);
+        if (!result || result.pending) return;
+        const base = byId.get(id);
+        if (base && base.textarea) {
+          base.textarea.value = result.corrected;
+          base.textarea.dispatchEvent(new Event('input', { bubbles: true }));
+          this.panel.unhighlightRow(id, result.index);
+          result.hasIssues = false;
+          this.panel.setItems(results);
+          this.panel.render(acceptHandler, rejectHandler);
+          this.app.generateSummary?.();
+        }
+      };
+
+      const rejectHandler = (id) => {
+        const result = results.find(r => r.id === id);
+        if (!result) return;
+        this.panel.unhighlightRow(id, result.index);
+        result.hasIssues = false;
+        this.panel.setItems(results);
+        this.panel.render(acceptHandler, rejectHandler);
+      };
+
+      const refreshPanel = () => {
+        this.panel.setItems(results);
+        this.panel.highlightRows(results);
+        if (!panelOpened) {
+          if (results.some(r => r && r.hasIssues)) {
+            this.panel.render(acceptHandler, rejectHandler);
+            panelOpened = true;
+          }
+        } else {
+          this.panel.refresh();
+        }
+      };
 
       const fetchWithTimeout = async (url, options, timeoutMs = 25000) => {
         const ctrl = new AbortController();
@@ -54,6 +103,10 @@ export default class SpellChecker {
         try {
           return await fetch(url, { ...options, signal: ctrl.signal });
         } finally { clearTimeout(id); }
+      };
+
+      const applyResult = (idx, base, corr) => {
+        results[idx] = { ...corr, index: base.index, pending: false };
       };
 
       const runBatch = async (batch) => {
@@ -66,10 +119,11 @@ export default class SpellChecker {
           const list = data.corrections || [];
           batch.forEach((b, i) => {
             const corr = list[i] || { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [] };
-            results[b.idx] = { ...corr, index: b.row.index };
+            applyResult(b.idx, b.row, corr);
           });
           completed += batch.length;
           setLabel(`Checking ${completed}/${total}...`);
+          refreshPanel();
         } catch (e) {
           // fallback to singles
           for (const b of batch) {
@@ -79,12 +133,13 @@ export default class SpellChecker {
               }, 20000);
               const data = await r.json();
               const corr = (data.corrections && data.corrections[0]) || { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [] };
-              results[b.idx] = { ...corr, index: b.row.index };
+              applyResult(b.idx, b.row, corr);
             } catch (_) {
-              results[b.idx] = { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [], index: b.row.index };
+              applyResult(b.idx, b.row, { id: b.row.id, hasIssues: false, corrected: b.row.text, changes: [] });
             } finally {
               completed += 1;
               setLabel(`Checking ${completed}/${total}...`);
+              refreshPanel();
             }
           }
         }
@@ -122,44 +177,11 @@ export default class SpellChecker {
       });
       await Promise.all(workers);
 
-      // Highlight rows
-      this.panel.setItems(results);
-      this.panel.highlightRows(results);
-
-      // If no issues at first shot, show a toast and stop
-      if (!results.some(r => r.hasIssues)) {
+      // If nothing surfaced any issue, close panel and show success toast.
+      if (!panelOpened) {
         this.panel.hide();
         this.panel.showToast('No spelling/grammar issues found', 'success');
-        setLabel(this._labelRestore);
-        return;
       }
-
-      // Define handlers so we can re-render with same closures
-      const acceptHandler = (id) => {
-        const result = results.find(r => r.id === id);
-        const base = byId.get(id);
-        if (result && base && base.textarea) {
-          base.textarea.value = result.corrected;
-          base.textarea.dispatchEvent(new Event('input', { bubbles: true }));
-          this.panel.unhighlightRow(id, result.index);
-          result.hasIssues = false;
-          this.panel.setItems(results);
-          this.panel.render(acceptHandler, rejectHandler);
-          this.app.generateSummary?.();
-        }
-      };
-
-      const rejectHandler = (id) => {
-        const result = results.find(r => r.id === id);
-        if (!result) return;
-        this.panel.unhighlightRow(id, result.index);
-        result.hasIssues = false;
-        this.panel.setItems(results);
-        this.panel.render(acceptHandler, rejectHandler);
-      };
-
-      // Render review panel near the first item with issues
-      this.panel.render(acceptHandler, rejectHandler);
 
       // Restore label after finishing
       setLabel(this._labelRestore);
